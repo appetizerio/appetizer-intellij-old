@@ -1,0 +1,37 @@
+<idea-plugin version="2">
+  <name>Appetizer Remote call</name>
+  <description>
+    IntelliJ IDEA plugin for remote call some procedures.
+
+    At the moment it can open the files on http GET-request to localhost:8091 with "message" parameter looking like
+    "FileName.java:89" or "any/path/FileName.java:89".
+    In this case plugin will try to find the most appropriate file basing on the specified path in opened projects and
+    navigate to it.
+
+    By default sending requests is permitted from localhost only. You can change it in Settings | Other Settings | Remote Call.
+
+    Listening port also can be configured in Settings.
+  </description>
+  <version>1.0</version>
+  <vendor email="luoly@emnets.org">luoluyao</vendor>
+  <idea-version since-build="129.1"/>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <application-components>
+    <component>
+      <implementation-class>com.appetizer.intellij.remotecall.RemoteCallComponent</implementation-class>
+    </component>
+  </application-components>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="com.appetizer.intellij.remotecall.settings.RemoteCallSettings"
+                        serviceImplementation="com.appetizer.intellij.remotecall.settings.RemoteCallSettings"/>
+    <applicationConfigurable instance="com.appetizer.intellij.remotecall.settings.RemoteCallConfigurable"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <inspectionToolProvider implementation="com.appetizer.intellij.codeinspection.ReplaceProvider"/>
+  </extensions>
+
+</idea-plugin>
