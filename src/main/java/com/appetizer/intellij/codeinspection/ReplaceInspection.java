@@ -4,16 +4,20 @@ import com.intellij.codeInsight.daemon.GroupNames;
 import com.intellij.codeInspection.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiLocalVariable;
+import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.ui.DocumentAdapter;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 
 
-public class ReplaceInspection extends BaseJavaLocalInspectionTool{
+public class ReplaceInspection extends BaseJavaLocalInspectionTool {
   private static final Logger LOG = Logger.getInstance(ReplaceInspection.class);
   @SuppressWarnings({"WeakerAccess"}) @NonNls public String CHECKED_CLASSES = "java.lang.String;";
   @NonNls private static final String DESCRIPTION_TEMPLATE = InspectionsBundle.message("inspection.duplicates.replace.family.quickfix");
@@ -48,8 +52,8 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool{
     }
 
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-        LOG.info("fix apetizer");
-        // TODO: fix operation
+      LOG.info("fix apetizer");
+      // TODO: fix operation
     }
   }
 
@@ -57,24 +61,23 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool{
     return exp.contains("apetizer");
   }
 
-    @NotNull
-    @Override
-    public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, final boolean isOnTheFly) {
-      return new JavaElementVisitor() {
-        @Override
-        public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
-        }
+  @NotNull
+  @Override
+  public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, final boolean isOnTheFly) {
+    return new JavaElementVisitor() {
+      @Override
+      public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
+      }
 
-        @Override
-        public void visitLocalVariable(PsiLocalVariable variable) {
-          super.visitLocalVariable(variable);
-          if (isFindYYY(variable.toString())) {
-            holder.registerProblem(variable,
-                                   DESCRIPTION_TEMPLATE, myQuickFix);
-          }
+      @Override
+      public void visitLocalVariable(PsiLocalVariable variable) {
+        super.visitLocalVariable(variable);
+        if (isFindYYY(variable.toString())) {
+          holder.registerProblem(variable, DESCRIPTION_TEMPLATE, myQuickFix);
         }
-      };
-    }
+      }
+    };
+  }
 
   public JComponent createOptionsPanel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));

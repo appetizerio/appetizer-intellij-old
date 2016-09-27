@@ -27,7 +27,7 @@ public class OpenFileMessageHandler implements MessageHandler {
       if (matcher.groupCount() >= 2) {
         column = StringUtil.parseInt(StringUtil.notNullize(matcher.group(2)), 1) - 1;
       }
-      if(matcher.groupCount() >= 3) {
+      if (matcher.groupCount() >= 3) {
         offsetline = StringUtil.parseInt(StringUtil.notNullize(matcher.group(3)), 1) - 1;
       }
     }
