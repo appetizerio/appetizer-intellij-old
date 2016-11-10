@@ -1,10 +1,10 @@
-package com.appetizer.intellij.remotecall;
+package io.appetizer.intellij.remotecall;
 
-import com.appetizer.intellij.remotecall.handler.OpenFileMessageHandler;
-import com.appetizer.intellij.remotecall.notifier.MessageNotifier;
-import com.appetizer.intellij.remotecall.notifier.SocketMessageNotifier;
-import com.appetizer.intellij.remotecall.settings.RemoteCallSettings;
-import com.appetizer.intellij.remotecall.utils.FileNavigatorImpl;
+import io.appetizer.intellij.remotecall.handler.OpenFileMessageHandler;
+import io.appetizer.intellij.remotecall.notifier.MessageNotifier;
+import io.appetizer.intellij.remotecall.notifier.SocketMessageNotifier;
+import io.appetizer.intellij.remotecall.settings.RemoteCallSettings;
+import io.appetizer.intellij.remotecall.filenavigator.FileNavigatorImpl;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -27,6 +27,8 @@ public class RemoteCallComponent implements ApplicationComponent {
   }
 
   public void initComponent() {
+
+
     final int port = mySettings.getPortNumber();
     final boolean allowRequestsFromLocalhostOnly = mySettings.isAllowRequestsFromLocalhostOnly();
 
@@ -65,6 +67,6 @@ public class RemoteCallComponent implements ApplicationComponent {
 
   @NotNull
   public String getComponentName() {
-    return "RemoteCallComponent";
+    return "AppetizerRemoteCallComponent";
   }
 }

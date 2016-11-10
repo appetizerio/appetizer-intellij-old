@@ -1,4 +1,4 @@
-package com.appetizer.intellij.remotecall.handler;
+package io.appetizer.intellij.remotecall.handler;
 
 public interface MessageHandler {
 

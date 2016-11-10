@@ -1,4 +1,4 @@
-package com.appetizer.intellij.codeinspection;
+package io.appetizer.intellij.codeinspection;
 
 import com.intellij.codeInsight.daemon.GroupNames;
 import com.intellij.codeInspection.*;

@@ -1,6 +1,6 @@
-package com.appetizer.intellij.remotecall.settings;
+package io.appetizer.intellij.remotecall.settings;
 
-import com.appetizer.intellij.remotecall.RemoteCallComponent;
+import io.appetizer.intellij.remotecall.RemoteCallComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;

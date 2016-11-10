@@ -1,6 +1,6 @@
-package com.appetizer.intellij.remotecall.notifier;
+package io.appetizer.intellij.remotecall.notifier;
 
-import com.appetizer.intellij.remotecall.handler.MessageHandler;
+import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.net.io.Util;
@@ -105,7 +105,6 @@ public class SocketMessageNotifier implements MessageNotifier {
         parameters.put(parametersPair[0], parametersPair[1]);
       }
     }
-
     return parameters;
   }
 

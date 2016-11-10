@@ -1,4 +1,4 @@
-package com.appetizer.intellij.remotecall.utils;
+package io.appetizer.intellij.remotecall.filenavigator;
 
 import com.google.common.base.Joiner;
 import com.intellij.openapi.application.ApplicationManager;
@@ -103,7 +103,7 @@ public class FileNavigatorImpl implements FileNavigator {
     attr.setBackgroundColor(JBColor.LIGHT_GRAY);
     //attr.setForegroundColor(JBColor.LIGHT_GRAY);
     editor.getMarkupModel().addLineHighlighter(line, HighlighterLayer.LAST, attr);
-    while( offsetline > 0 ) {
+    while (offsetline > 0) {
       editor.getMarkupModel().addLineHighlighter(line + offsetline, HighlighterLayer.LAST, attr);
       offsetline--;
     }

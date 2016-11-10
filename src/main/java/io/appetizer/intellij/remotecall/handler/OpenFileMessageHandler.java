@@ -1,6 +1,6 @@
-package com.appetizer.intellij.remotecall.handler;
+package io.appetizer.intellij.remotecall.handler;
 
-import com.appetizer.intellij.remotecall.utils.FileNavigator;
+import io.appetizer.intellij.remotecall.filenavigator.FileNavigator;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 

@@ -14,18 +14,18 @@
 
   <application-components>
     <component>
-      <implementation-class>com.appetizer.intellij.remotecall.RemoteCallComponent</implementation-class>
+      <implementation-class>io.appetizer.intellij.remotecall.RemoteCallComponent</implementation-class>
     </component>
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceInterface="com.appetizer.intellij.remotecall.settings.RemoteCallSettings"
-                        serviceImplementation="com.appetizer.intellij.remotecall.settings.RemoteCallSettings"/>
-    <applicationConfigurable instance="com.appetizer.intellij.remotecall.settings.RemoteCallConfigurable"/>
+    <applicationService serviceInterface="io.appetizer.intellij.remotecall.settings.RemoteCallSettings"
+                        serviceImplementation="io.appetizer.intellij.remotecall.settings.RemoteCallSettings"/>
+    <applicationConfigurable instance="io.appetizer.intellij.remotecall.settings.RemoteCallConfigurable"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <inspectionToolProvider implementation="com.appetizer.intellij.codeinspection.ReplaceProvider"/>
+    <inspectionToolProvider implementation="io.appetizer.intellij.codeinspection.ReplaceProvider"/>
   </extensions>
 
 </idea-plugin>
