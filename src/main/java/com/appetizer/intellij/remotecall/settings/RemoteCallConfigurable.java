@@ -24,7 +24,7 @@ public class RemoteCallConfigurable implements SearchableConfigurable {
   @NotNull
   @Override
   public String getId() {
-    return "remote.call";
+    return "io.appetizer.intellij";
   }
 
   @Nullable
@@ -36,7 +36,7 @@ public class RemoteCallConfigurable implements SearchableConfigurable {
   @Nls
   @Override
   public String getDisplayName() {
-    return "Remote Call";
+    return "Appetizer";
   }
 
   @Nullable

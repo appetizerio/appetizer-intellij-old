@@ -38,7 +38,7 @@ public class RemoteCallComponent implements ApplicationComponent {
     catch (IOException e) {
       ApplicationManager.getApplication().invokeLater(new Runnable() {
         public void run() {
-          Messages.showMessageDialog("Can't bind with " + port + " port. RemoteCall plugin won't work", "RemoteCall Plugin Error",
+          Messages.showMessageDialog("Can't bind with " + port + " port. Appetizer plugin won't work", "Appetizer Plugin Error",
                                      Messages.getErrorIcon());
         }
       });

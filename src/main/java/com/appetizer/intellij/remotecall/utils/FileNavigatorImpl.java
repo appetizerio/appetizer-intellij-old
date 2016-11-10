@@ -24,6 +24,8 @@ public class FileNavigatorImpl implements FileNavigator {
 
   private static final Logger log = Logger.getInstance(FileNavigatorImpl.class);
   private static final Joiner pathJoiner = Joiner.on("/");
+  private static final String pathConstraint = "src";
+  private static final String androidManifestName = "AndroidManifest.xml";
 
   @Override
   public void findAndNavigate(final String fileName, final int line, final int column, final int offsetline) {
@@ -42,10 +44,18 @@ public class FileNavigatorImpl implements FileNavigator {
         while (pathElements.size() > 0) {
           for (Project project : foundFilesInAllProjects.keySet()) {
             for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
-              if (directFile.getPath().endsWith(variableFileName)) {
-                log.info("Found file " + directFile.getName());
-                navigate(project, directFile, line, column, offsetline);
-                return;
+              if (directFile.getPath().contains(pathConstraint)) {
+                // AndroidManifest.xml
+                if (directFile.getPath().endsWith(androidManifestName)) {
+                  log.info("Check project package name" + directFile.getName());
+                  // TODO: Check if apk belongs to opened project
+                }
+                if (directFile.getPath().endsWith(variableFileName)) {
+                  log.info("Found file " + directFile.getName());
+                  log.info("line problem:" + line);
+                  navigate(project, directFile, line, column, offsetline);
+                  return;
+                }
               }
             }
           }
@@ -64,6 +74,10 @@ public class FileNavigatorImpl implements FileNavigator {
       pathParts.push(file.getName());
     }
     return pathParts;
+  }
+
+  private static boolean checkPackageName(Project project, VirtualFile file, String packageName) {
+    return true;
   }
 
   private static void navigate(Project project, VirtualFile file, int line, int column, int offsetline) {

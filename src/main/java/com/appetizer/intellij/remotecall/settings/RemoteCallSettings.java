@@ -7,10 +7,7 @@ import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.Nullable;
 
-@State(
-  name = "AppetizerRemoteCall",
-  storages = {@Storage(
-    file = StoragePathMacros.APP_CONFIG + "/remotecall.xml")})
+@State(name = "AppetizerRemoteCall", storages = {@Storage(file = StoragePathMacros.APP_CONFIG + "/remotecall.xml")})
 public class RemoteCallSettings implements PersistentStateComponent<RemoteCallSettings> {
   private int myPortNumber = 8097;
   private boolean myAllowRequestsFromLocalhostOnly = true;

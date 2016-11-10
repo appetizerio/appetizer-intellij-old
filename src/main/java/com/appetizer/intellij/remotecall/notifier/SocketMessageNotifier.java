@@ -76,8 +76,12 @@ public class SocketMessageNotifier implements MessageNotifier {
           log.info("Received request " + requestString);
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
 
-          String message = parameters.get("message") != null ? decode(parameters.get("message").trim(), Charsets.UTF_8.name()) : "";
+          String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+          String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "1";
+          String col = parameters.get("col") != null ? decode(parameters.get("col").trim(), Charsets.UTF_8.name()) : "1";
+          String offline = parameters.get("offsetline") != null ? decode(parameters.get("offsetline").trim(), Charsets.UTF_8.name()) : "0";
 
+          String message = fileName + ":" + line + ":" + col + ":" + offline;
           log.info("Received message " + message);
           handleMessage(message);
         }

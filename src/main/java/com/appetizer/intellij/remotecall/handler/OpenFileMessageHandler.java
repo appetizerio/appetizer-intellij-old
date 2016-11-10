@@ -1,6 +1,7 @@
 package com.appetizer.intellij.remotecall.handler;
 
 import com.appetizer.intellij.remotecall.utils.FileNavigator;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 
 import java.util.regex.Matcher;
@@ -11,6 +12,7 @@ import static java.util.regex.Pattern.compile;
 public class OpenFileMessageHandler implements MessageHandler {
   private static final Pattern COLUMN_PATTERN = compile("[:#](\\d+)[:#]?(\\d*)[:#]?(\\d*)$");
   private final FileNavigator fileNavigator;
+  private static final Logger log = Logger.getInstance(OpenFileMessageHandler.class);
 
   public OpenFileMessageHandler(FileNavigator fileNavigator) {
     this.fileNavigator = fileNavigator;

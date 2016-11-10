@@ -13,3 +13,11 @@ hs_err_pid*
 *.iml, 
 __pycache__ 
 *.pyc
+
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/dictionaries
+.idea/vcs.xml
+
+/out/
+inspectionDescriptions/
