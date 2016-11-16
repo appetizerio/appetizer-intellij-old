@@ -1,5 +1,6 @@
 package io.appetizer.intellij.remotecall.notifier;
 
+import io.appetizer.intellij.VariantPool;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.codec.Charsets;
@@ -77,11 +78,27 @@ public class SocketMessageNotifier implements MessageNotifier {
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
 
           String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-          String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "1";
-          String col = parameters.get("col") != null ? decode(parameters.get("col").trim(), Charsets.UTF_8.name()) : "1";
-          String offline = parameters.get("offsetline") != null ? decode(parameters.get("offsetline").trim(), Charsets.UTF_8.name()) : "0";
+          String message = "";
+          if (fileName != "") {
+            String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "1";
+            String col = parameters.get("col") != null ? decode(parameters.get("col").trim(), Charsets.UTF_8.name()) : "1";
+            String offline = parameters.get("offsetline") != null ? decode(parameters.get("offsetline").trim(), Charsets.UTF_8.name()) : "0";
+            message = fileName + ":" + line + ":" + col + ":" + offline;
+          } else {
+            String taggedWords = parameters.get("taggedWords") != null ? decode(parameters.get("taggedWords").trim(), Charsets.UTF_8.name()) : "";
+            String relatedFileName = parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
+            String relatedLine = parameters.get("relatedline") != null ? decode(parameters.get("relatedline").trim(), Charsets.UTF_8.name()) : "0";
+            VariantPool.setTaggedWords(taggedWords);
+            VariantPool.setIsJump(true);
+            VariantPool.setFileName(relatedFileName);
+            VariantPool.setMyLine(Integer.parseInt(relatedLine));
+            String message1 = "message1" + taggedWords + " " + relatedFileName + " " + relatedLine;
+            log.info(message1);
+          }
 
-          String message = fileName + ":" + line + ":" + col + ":" + offline;
+          // 测试区域`
+          //ReflectionUtil.setField(owner.getClass(), owner, String.class, property, value);
+          //测试区域
           log.info("Received message " + message);
           handleMessage(message);
         }

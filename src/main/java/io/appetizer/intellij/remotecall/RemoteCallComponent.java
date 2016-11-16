@@ -1,5 +1,11 @@
 package io.appetizer.intellij.remotecall;
 
+import com.intellij.ide.GeneralSettings;
+import com.intellij.openapi.diff.impl.processing.DiffCorrection;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.MessageDialogBuilder;
+import com.intellij.psi.filters.TrueFilter;
 import io.appetizer.intellij.remotecall.handler.OpenFileMessageHandler;
 import io.appetizer.intellij.remotecall.notifier.MessageNotifier;
 import io.appetizer.intellij.remotecall.notifier.SocketMessageNotifier;
@@ -11,6 +17,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -27,10 +34,46 @@ public class RemoteCallComponent implements ApplicationComponent {
   }
 
   public void initComponent() {
-
-
     final int port = mySettings.getPortNumber();
     final boolean allowRequestsFromLocalhostOnly = mySettings.isAllowRequestsFromLocalhostOnly();
+    //final JTextPane messageComponent = new JTextPane();
+    //Messages.configureMessagePaneUi(messageComponent, message);
+    //Messages.showMessageDialog("<html>Go to <a href=\"http://www.appetizer.io/\">appetizer</a></html>", "Appetizer",
+    //                          Messages.getInformationIcon());
+    //essages.configureMessagePaneUi()
+    DialogWrapper.DoNotAskOption option = new DialogWrapper.DoNotAskOption() {
+      @Override
+      public boolean isToBeShown() {
+        return RemoteCallSettings.getInstance().getAskAgain();
+      }
+
+      @Override
+      public void setToBeShown(boolean value, int exitCode) {
+        RemoteCallSettings.getInstance().setAskAgain(value);
+      }
+
+      @Override
+      public boolean canBeHidden() {
+        return true;
+      }
+
+      @Override
+      public boolean shouldSaveOptionsOnCancel() {
+        return false;
+      }
+
+      @NotNull
+      @Override
+      public String getDoNotShowMessage() {
+        return "Do not ask me again";
+      }
+    };
+
+    int result = MessageDialogBuilder.yesNo("Appetizer", "<html> Appetizer is a DevOps tool intended for mobile app development. " +
+                                                         "<br/>Would you like to download Appetizer from <a href=\"http://www.appetizer.io/\"> here </a>?</html>")
+      .yesText("OK, I know it !")
+      .doNotAsk(option)
+      .show();
 
     try {
       serverSocket = new ServerSocket();

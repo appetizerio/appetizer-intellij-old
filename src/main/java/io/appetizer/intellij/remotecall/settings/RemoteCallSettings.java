@@ -1,9 +1,7 @@
 package io.appetizer.intellij.remotecall.settings;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.ide.GeneralSettings;
+import com.intellij.openapi.components.*;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +9,10 @@ import org.jetbrains.annotations.Nullable;
 public class RemoteCallSettings implements PersistentStateComponent<RemoteCallSettings> {
   private int myPortNumber = 8097;
   private boolean myAllowRequestsFromLocalhostOnly = true;
+
+  public static RemoteCallSettings getInstance() {
+    return (RemoteCallSettings)ServiceManager.getService(RemoteCallSettings.class);
+  }
 
   public int getPortNumber() {
     return myPortNumber;

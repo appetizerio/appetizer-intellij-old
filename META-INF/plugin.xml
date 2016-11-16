@@ -3,8 +3,7 @@
   <description>
     IntelliJ IDEA plugin for Appetizer.
 
-    By default sending requests is permitted from localhost only. You can change it in Settings | Other Settings | Remote Call.
-    Listening port also can be configured in Settings.
+    Listening port also can be configured in Settings | Other Settings | Appetizer
   </description>
   <version>1.0</version>
   <vendor email="luoly@emnets.org">luoluyao</vendor>

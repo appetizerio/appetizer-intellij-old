@@ -9,6 +9,9 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiLocalVariable;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.ui.DocumentAdapter;
+import io.appetizer.intellij.VariantPool;
+import io.appetizer.intellij.remotecall.filenavigator.FileNavigator;
+import io.appetizer.intellij.remotecall.filenavigator.FileNavigatorImpl;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +25,8 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
   @SuppressWarnings({"WeakerAccess"}) @NonNls public String CHECKED_CLASSES = "java.lang.String;";
   @NonNls private static final String DESCRIPTION_TEMPLATE = InspectionsBundle.message("inspection.duplicates.replace.family.quickfix");
   private final LocalQuickFix myQuickFix = new MyQuickFix();
+
+  private static final FileNavigator fileNavigator = new FileNavigatorImpl();;
 
   @NotNull
   public String getDisplayName() {
@@ -42,7 +47,7 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
     @NotNull
     @Override
     public String getName() {
-      return "Use 'appetizer'";
+      return "Go to see 'root cause'";
     }
 
     @NotNull
@@ -52,13 +57,14 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
     }
 
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-      LOG.info("fix apetizer");
-      // TODO: fix operation
+      if (VariantPool.isJump()) {
+        fileNavigator.findAndNavigate(VariantPool.getMyFileName(), VariantPool.getMyLine(), 2, 1);
+      }
     }
   }
 
   private static boolean isFindYYY(String exp) {
-    return exp.contains("apetizer");
+    return exp.contains(VariantPool.getMyTaggedWords());
   }
 
   @NotNull
@@ -72,8 +78,10 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
       @Override
       public void visitLocalVariable(PsiLocalVariable variable) {
         super.visitLocalVariable(variable);
-        if (isFindYYY(variable.toString())) {
-          holder.registerProblem(variable, DESCRIPTION_TEMPLATE, myQuickFix);
+        if (VariantPool.isJump()) {
+          if (isFindYYY(variable.toString())) {
+            holder.registerProblem(variable, DESCRIPTION_TEMPLATE, myQuickFix);
+          }
         }
       }
     };
