@@ -1,5 +1,9 @@
 package io.appetizer.intellij.remotecall.notifier;
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
+import com.intellij.codeInspection.InspectionProfileEntry;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
@@ -23,6 +27,7 @@ public class SocketMessageNotifier implements MessageNotifier {
   private final ServerSocket serverSocket;
   private static final String CRLF = "\r\n";
   private static final String NL = "\n";
+  private final InspectionProfileEntry owner = null;
 
   public SocketMessageNotifier(ServerSocket serverSocket) {
     this.serverSocket = serverSocket;
@@ -92,13 +97,10 @@ public class SocketMessageNotifier implements MessageNotifier {
             VariantPool.setIsJump(true);
             VariantPool.setFileName(relatedFileName);
             VariantPool.setMyLine(Integer.parseInt(relatedLine));
-            String message1 = "message1" + taggedWords + " " + relatedFileName + " " + relatedLine;
-            log.info(message1);
+            Project[] projects = ProjectManager.getInstance().getOpenProjects();
+            // TODO: 2016/11/19 'project[0]' need modifying to specific project
+            DaemonCodeAnalyzer.getInstance(projects[0]).restart();
           }
-
-          // 测试区域`
-          //ReflectionUtil.setField(owner.getClass(), owner, String.class, property, value);
-          //测试区域
           log.info("Received message " + message);
           handleMessage(message);
         }
@@ -124,7 +126,6 @@ public class SocketMessageNotifier implements MessageNotifier {
     }
     return parameters;
   }
-
 
   private void handleMessage(String message) {
     for (MessageHandler handler : messageHandlers) {

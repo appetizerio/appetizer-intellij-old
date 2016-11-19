@@ -2,7 +2,6 @@ package io.appetizer.intellij.codeinspection;
 
 import com.intellij.codeInsight.daemon.GroupNames;
 import com.intellij.codeInspection.*;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
@@ -20,13 +19,14 @@ import javax.swing.event.DocumentEvent;
 import java.awt.*;
 
 
+
+
 public class ReplaceInspection extends BaseJavaLocalInspectionTool {
-  private static final Logger LOG = Logger.getInstance(ReplaceInspection.class);
+
   @SuppressWarnings({"WeakerAccess"}) @NonNls public String CHECKED_CLASSES = "java.lang.String;";
   @NonNls private static final String DESCRIPTION_TEMPLATE = InspectionsBundle.message("inspection.duplicates.replace.family.quickfix");
   private final LocalQuickFix myQuickFix = new MyQuickFix();
-
-  private static final FileNavigator fileNavigator = new FileNavigatorImpl();;
+  private static final FileNavigator fileNavigator = new FileNavigatorImpl();
 
   @NotNull
   public String getDisplayName() {

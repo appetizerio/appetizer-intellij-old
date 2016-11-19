@@ -1,6 +1,7 @@
 package io.appetizer.intellij.remotecall;
 
 import com.intellij.ide.GeneralSettings;
+import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.diff.impl.processing.DiffCorrection;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
