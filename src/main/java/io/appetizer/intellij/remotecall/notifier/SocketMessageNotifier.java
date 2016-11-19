@@ -82,14 +82,22 @@ public class SocketMessageNotifier implements MessageNotifier {
           log.info("Received request " + requestString);
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
 
-          String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+          String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
           String message = "";
-          if (fileName != "") {
-            String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "1";
-            String col = parameters.get("col") != null ? decode(parameters.get("col").trim(), Charsets.UTF_8.name()) : "1";
-            String offline = parameters.get("offsetline") != null ? decode(parameters.get("offsetline").trim(), Charsets.UTF_8.name()) : "0";
-            message = fileName + ":" + line + ":" + col + ":" + offline;
-          } else {
+          if (Operation.equals( "HightLight")) {
+            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+            String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
+            String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
+            message = fileName + ":" + groupId + ":" + lines ;
+            log.info("Received message " + message);
+            handleMessage(message, true);
+          }else if (Operation.equals("RemoveHightLight")) {
+            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+            String groupId = parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
+            message = fileName + ":" + groupId;
+            log.info("RemoveHightLight : " + message);
+            handleMessage(message, false);
+          } else if (Operation.equals("Tag")) {
             String taggedWords = parameters.get("taggedWords") != null ? decode(parameters.get("taggedWords").trim(), Charsets.UTF_8.name()) : "";
             String relatedFileName = parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
             String relatedLine = parameters.get("relatedline") != null ? decode(parameters.get("relatedline").trim(), Charsets.UTF_8.name()) : "0";
@@ -101,8 +109,7 @@ public class SocketMessageNotifier implements MessageNotifier {
             // TODO: 2016/11/19 'project[0]' need modifying to specific project
             DaemonCodeAnalyzer.getInstance(projects[0]).restart();
           }
-          log.info("Received message " + message);
-          handleMessage(message);
+
         }
         catch (IOException e) {
           log.error("Error", e);
@@ -127,9 +134,9 @@ public class SocketMessageNotifier implements MessageNotifier {
     return parameters;
   }
 
-  private void handleMessage(String message) {
+  private void handleMessage(String message, boolean isAdd) {
     for (MessageHandler handler : messageHandlers) {
-      handler.handleMessage(message);
+      handler.handleMessage(message, isAdd);
     }
   }
 }

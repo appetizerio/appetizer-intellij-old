@@ -17,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
-
-
+import java.util.ArrayList;
 
 
 public class ReplaceInspection extends BaseJavaLocalInspectionTool {
@@ -58,7 +57,9 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
 
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
       if (VariantPool.isJump()) {
-        fileNavigator.findAndNavigate(VariantPool.getMyFileName(), VariantPool.getMyLine(), 2, 1);
+        ArrayList<Integer> linesArrayList = new ArrayList<Integer>();
+        linesArrayList.add(VariantPool.getMyLine());
+        fileNavigator.findAndNavigate(VariantPool.getMyFileName(),linesArrayList, true);
       }
     }
   }

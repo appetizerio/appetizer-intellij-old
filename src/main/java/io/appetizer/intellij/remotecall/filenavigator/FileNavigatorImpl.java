@@ -28,7 +28,7 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final String androidManifestName = "AndroidManifest.xml";
 
   @Override
-  public void findAndNavigate(final String fileName, final int line, final int column, final int offsetline) {
+  public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final boolean isAdd) {
     ApplicationManager.getApplication().invokeLater(new Runnable() {
       public void run() {
         Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = new HashMap<Project, Collection<VirtualFile>>();
@@ -52,8 +52,11 @@ public class FileNavigatorImpl implements FileNavigator {
                 }
                 if (directFile.getPath().endsWith(variableFileName)) {
                   log.info("Found file " + directFile.getName());
-                  log.info("line problem:" + line);
-                  navigate(project, directFile, line, column, offsetline);
+                  if (isAdd) {
+                    navigate(project, directFile, lines);
+                  } else {
+                    removeHightlight(project, lines);
+                  }
                   return;
                 }
               }
@@ -80,12 +83,12 @@ public class FileNavigatorImpl implements FileNavigator {
     return true;
   }
 
-  private static void navigate(Project project, VirtualFile file, int line, int column, int offsetline) {
-    final OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, file, line, column);
+  private static void navigate(Project project, VirtualFile file, ArrayList<Integer> lines) {
+    final OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, file);
     if (openFileDescriptor.canNavigate()) {
-      log.info("Trying to navigate to " + file.getPath() + ":" + line);
+      log.info("Trying to navigate to " + file.getPath());
       openFileDescriptor.navigate(true);
-      addLinesHighlighter(project, line, offsetline);
+      addLinesHighlighter(project, lines);
       Window parentWindow = WindowManager.getInstance().suggestParentWindow(project);
       if (parentWindow != null) {
         parentWindow.toFront();
@@ -96,16 +99,25 @@ public class FileNavigatorImpl implements FileNavigator {
     }
   }
 
-  private static void addLinesHighlighter(Project project, int line, int offsetline) {
+  private static void addLinesHighlighter(Project project, ArrayList<Integer> lines) {
     Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
     editor.getMarkupModel().removeAllHighlighters();
     final TextAttributes attr = new TextAttributes();
     attr.setBackgroundColor(JBColor.LIGHT_GRAY);
     //attr.setForegroundColor(JBColor.LIGHT_GRAY);
-    editor.getMarkupModel().addLineHighlighter(line, HighlighterLayer.LAST, attr);
-    while (offsetline > 0) {
-      editor.getMarkupModel().addLineHighlighter(line + offsetline, HighlighterLayer.LAST, attr);
-      offsetline--;
+    for (int line : lines){
+      editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
+    }
+  }
+
+  private static void removeHightlight(Project project, ArrayList<Integer> linesArrayList) {
+    Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+    editor.getMarkupModel().getDocument();
+    final TextAttributes attr = new TextAttributes();
+    attr.setBackgroundColor(JBColor.WHITE);
+    attr.setForegroundColor(JBColor.BLACK);
+    for (int line : linesArrayList){
+      editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
     }
   }
 }
