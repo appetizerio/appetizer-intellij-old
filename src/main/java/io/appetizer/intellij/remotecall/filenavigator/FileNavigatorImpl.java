@@ -113,6 +113,10 @@ public class FileNavigatorImpl implements FileNavigator {
   private static void removeHightlight(Project project, ArrayList<Integer> linesArrayList) {
     Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
     editor.getMarkupModel().getDocument();
+    if (linesArrayList.contains(-1)) {
+      editor.getMarkupModel().removeAllHighlighters();
+      return;
+    }
     final TextAttributes attr = new TextAttributes();
     attr.setBackgroundColor(JBColor.WHITE);
     attr.setForegroundColor(JBColor.BLACK);

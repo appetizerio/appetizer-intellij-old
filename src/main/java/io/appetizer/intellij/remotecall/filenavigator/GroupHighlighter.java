@@ -6,6 +6,7 @@ public class GroupHighlighter {
   private static ArrayList<GroupHighlighter> groupsArrayList = new ArrayList<GroupHighlighter> ();
   private int groupid;
   private ArrayList<Integer> lines = new ArrayList<Integer>();
+  public static int MAXGROUPID = 10000;
 
   public GroupHighlighter(int groupid, ArrayList<Integer> lines){
     this.groupid = groupid;

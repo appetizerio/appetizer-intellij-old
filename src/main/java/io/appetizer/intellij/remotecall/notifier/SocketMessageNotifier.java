@@ -5,6 +5,7 @@ import com.intellij.codeInspection.InspectionProfileEntry;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
+import io.appetizer.intellij.remotecall.filenavigator.GroupHighlighter;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.codec.Charsets;
@@ -84,7 +85,12 @@ public class SocketMessageNotifier implements MessageNotifier {
 
           String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
           String message = "";
-          if (Operation.equals( "HightLight")) {
+          if (Operation.equals( "Clear")) {
+            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+            message = fileName + ":" + GroupHighlighter.MAXGROUPID;
+            log.info("Clear : " + message);
+            handleMessage(message, false);
+          }else if (Operation.equals( "HightLight")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
             String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";

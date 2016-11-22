@@ -39,7 +39,11 @@ public class OpenFileMessageHandler implements MessageHandler {
         }
       }else {
         groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-        linesArrayList = GroupHighlighter.getLines(groupid) != null ? GroupHighlighter.getLines(groupid) : null;
+        if (groupid == GroupHighlighter.MAXGROUPID) {
+          linesArrayList.add(-1);
+        }else {
+          linesArrayList = GroupHighlighter.getLines(groupid) != null ? GroupHighlighter.getLines(groupid) : null;
+        }
         if (linesArrayList == null) {
           return;
         }
