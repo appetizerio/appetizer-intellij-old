@@ -6,8 +6,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.markup.HighlighterLayer;
 import com.intellij.openapi.editor.markup.TextAttributes;
+import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -35,17 +37,19 @@ public class FileNavigatorImpl implements FileNavigator {
         Project[] projects = ProjectManager.getInstance().getOpenProjects();
 
         for (Project project : projects) {
+          log.info("project:" + project.getName());
           foundFilesInAllProjects
             .put(project, FilenameIndex.getVirtualFilesByName(project, new File(fileName).getName(), GlobalSearchScope.allScope(project)));
         }
         Deque<String> pathElements = splitPath(fileName);
         String variableFileName = pathJoiner.join(pathElements);
-
+        log.info("variableFileName:" + variableFileName);
         while (pathElements.size() > 0) {
           for (Project project : foundFilesInAllProjects.keySet()) {
             for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
               if (directFile.getPath().contains(pathConstraint)) {
                 // AndroidManifest.xml
+                log.info("directFile.getPath(): " + directFile.getPath());
                 if (directFile.getPath().endsWith(androidManifestName)) {
                   log.info("Check project package name" + directFile.getName());
                   // TODO: Check if apk belongs to opened project
@@ -55,7 +59,7 @@ public class FileNavigatorImpl implements FileNavigator {
                   if (isAdd) {
                     navigate(project, directFile, lines);
                   } else {
-                    removeHightlight(project, lines);
+                    removeHightlight(project, directFile, lines);
                   }
                   return;
                 }
@@ -110,8 +114,9 @@ public class FileNavigatorImpl implements FileNavigator {
     }
   }
 
-  private static void removeHightlight(Project project, ArrayList<Integer> linesArrayList) {
-    Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+  private static void removeHightlight(Project project, VirtualFile file, ArrayList<Integer> linesArrayList) {
+    FileEditor fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(file);
+    Editor editor= fileEditor instanceof TextEditor ? ((TextEditor)fileEditor).getEditor() : null;
     editor.getMarkupModel().getDocument();
     if (linesArrayList.contains(-1)) {
       editor.getMarkupModel().removeAllHighlighters();

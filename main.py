@@ -4,10 +4,10 @@ import requests
 
 def usage():
     print("Usage:")
-    print('main.py [-p <port>] -f <fileName> -g <groupId> -l <lines> ')
-    print("main.py [-p <port>] -f <fileName> --rg <removeGroupId>")
-    print("main.py [-p <port>] --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
-    print("main.py --clear -f <fileName>")
+    print("python main.py [-p <port>] -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --rg <removeGroupId>")
+    print("python main.py [-p <port>] --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
+    print("python main.py --clear -f <fileName>")
 
 def main():
     fileName, relatedFileName = "", ""
@@ -36,7 +36,6 @@ def main():
             groupId = arg
         elif opt in ("-l"):
             lines = arg
-            print(lines)
         elif opt in ("--rg"):
             removeGroupId = arg
         elif opt in ("--tw"):
@@ -51,8 +50,8 @@ def main():
         r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&groupId=%s&lines=%s' %
                            (port, "HightLight",fileName, groupId, lines))
     elif removeGroupId != "":
-        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&removeGroupId=%s' %
-                           (port, "RemoveHightLight", fileName, removeGroupId))
+        r  = requests.get( 'http://localhost:%s?Operation=%s&removeGroupId=%s' %
+                           (port, "RemoveHightLight", removeGroupId))
     elif taggedWords != "":
         r  = requests.get( 'http://localhost:%s?Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
                            % (port, "Tag", taggedWords, relatedFileName, relatedline))

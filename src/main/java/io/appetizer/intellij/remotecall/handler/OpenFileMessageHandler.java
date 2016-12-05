@@ -3,12 +3,14 @@ package io.appetizer.intellij.remotecall.handler;
 import io.appetizer.intellij.remotecall.filenavigator.FileNavigator;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
-import io.appetizer.intellij.remotecall.filenavigator.GroupHighlighter;
+import io.appetizer.intellij.remotecall.highlight.FileHighLight;
+import io.appetizer.intellij.remotecall.highlight.HighLight;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.net.URLDecoder.decode;
 import static java.util.regex.Pattern.compile;
 
 public class OpenFileMessageHandler implements MessageHandler {
@@ -33,21 +35,31 @@ public class OpenFileMessageHandler implements MessageHandler {
           String[] strs = lines.split("\\-");
           for (String s : strs) {
             linesArrayList.add(Integer.parseInt(s));
+            log.info("Line:" + s);
           }
-          GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
+          //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
+          FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
+          HighLight.addHighToGroup(groupid, fileHighLight);
+          log.info("FileHighLight: fileName" + matcher.replaceAll(""));
           fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, true);
         }
       }else {
         groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-        if (groupid == GroupHighlighter.MAXGROUPID) {
+        if (groupid == HighLight.MAXGROUPID) {
           linesArrayList.add(-1);
+          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, false);
         }else {
-          linesArrayList = GroupHighlighter.getLines(groupid) != null ? GroupHighlighter.getLines(groupid) : null;
+          log.info("groupId : " + groupid);
+          ArrayList<FileHighLight> als;
+          als = HighLight.getFileLines(groupid);
+          if (als == null) {
+            return;
+          }
+          for (FileHighLight al : als) {
+            log.info(al.getFileName());
+            fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), false);
+          }
         }
-        if (linesArrayList == null) {
-          return;
-        }
-        fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, false);
       }
     }
   }

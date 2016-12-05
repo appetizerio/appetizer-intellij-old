@@ -5,9 +5,9 @@ import com.intellij.codeInspection.InspectionProfileEntry;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
-import io.appetizer.intellij.remotecall.filenavigator.GroupHighlighter;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
+import io.appetizer.intellij.remotecall.highlight.HighLight;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.net.io.Util;
 
@@ -87,7 +87,7 @@ public class SocketMessageNotifier implements MessageNotifier {
           String message = "";
           if (Operation.equals( "Clear")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-            message = fileName + ":" + GroupHighlighter.MAXGROUPID;
+            message = fileName + ":" + HighLight.MAXGROUPID;
             log.info("Clear : " + message);
             handleMessage(message, false);
           }else if (Operation.equals( "HightLight")) {
@@ -98,9 +98,8 @@ public class SocketMessageNotifier implements MessageNotifier {
             log.info("Received message " + message);
             handleMessage(message, true);
           }else if (Operation.equals("RemoveHightLight")) {
-            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String groupId = parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
-            message = fileName + ":" + groupId;
+            message = " " + ":" + groupId;
             log.info("RemoveHightLight : " + message);
             handleMessage(message, false);
           } else if (Operation.equals("Tag")) {
@@ -110,12 +109,15 @@ public class SocketMessageNotifier implements MessageNotifier {
             VariantPool.setTaggedWords(taggedWords);
             VariantPool.setIsJump(true);
             VariantPool.setFileName(relatedFileName);
-            VariantPool.setMyLine(Integer.parseInt(relatedLine));
+            int rl = Integer.parseInt(relatedLine);
+            if (rl - 1 > 0) {
+              VariantPool.setMyLine(rl - 1);
+            }
             Project[] projects = ProjectManager.getInstance().getOpenProjects();
             // TODO: 2016/11/19 'project[0]' need modifying to specific project
+            log.info("project Name" + projects[0].getName());
             DaemonCodeAnalyzer.getInstance(projects[0]).restart();
           }
-
         }
         catch (IOException e) {
           log.error("Error", e);
