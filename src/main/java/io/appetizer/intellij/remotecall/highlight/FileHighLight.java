@@ -11,7 +11,6 @@ public class FileHighLight {
     this.lines = mylines;
   }
 
-
   public String getFileName() {
     return fileName;
   }

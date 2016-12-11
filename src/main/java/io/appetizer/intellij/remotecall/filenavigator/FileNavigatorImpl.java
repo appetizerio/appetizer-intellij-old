@@ -17,9 +17,14 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.JBColor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class FileNavigatorImpl implements FileNavigator {
@@ -28,6 +33,7 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final Joiner pathJoiner = Joiner.on("/");
   private static final String pathConstraint = "src";
   private static final String androidManifestName = "AndroidManifest.xml";
+  private static Project myProject = null;
 
   @Override
   public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final boolean isAdd) {
@@ -35,34 +41,37 @@ public class FileNavigatorImpl implements FileNavigator {
       public void run() {
         Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = new HashMap<Project, Collection<VirtualFile>>();
         Project[] projects = ProjectManager.getInstance().getOpenProjects();
-
         for (Project project : projects) {
           log.info("project:" + project.getName());
           foundFilesInAllProjects
-            .put(project, FilenameIndex.getVirtualFilesByName(project, new File(fileName).getName(), GlobalSearchScope.allScope(project)));
+            .put(project, FilenameIndex.getVirtualFilesByName(project, new File(androidManifestName).getName(), GlobalSearchScope.allScope(project)));
+        }
+        for (Project project : foundFilesInAllProjects.keySet()) {
+          for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
+            if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), "org.luoluyao.myapplication")) {
+              log.info("Check project package name:" + directFile.getName());
+              myProject = project;
+            }
+          }
+        }
+        if (myProject == null) {
+          // TODO: return error to appetizer
+          return;
         }
         Deque<String> pathElements = splitPath(fileName);
         String variableFileName = pathJoiner.join(pathElements);
         log.info("variableFileName:" + variableFileName);
         while (pathElements.size() > 0) {
-          for (Project project : foundFilesInAllProjects.keySet()) {
-            for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
-              if (directFile.getPath().contains(pathConstraint)) {
-                // AndroidManifest.xml
-                log.info("directFile.getPath(): " + directFile.getPath());
-                if (directFile.getPath().endsWith(androidManifestName)) {
-                  log.info("Check project package name" + directFile.getName());
-                  // TODO: Check if apk belongs to opened project
+          for (VirtualFile directFile : FilenameIndex.getVirtualFilesByName(myProject, new File(fileName).getName(), GlobalSearchScope.allScope(myProject))) {
+            if (directFile.getPath().contains(pathConstraint)) {
+              if (directFile.getPath().endsWith(variableFileName)) {
+                log.info("Found file " + directFile.getName());
+                if (isAdd) {
+                  navigate(myProject, directFile, lines);
+                } else {
+                  removeHightlight(myProject, directFile, lines);
                 }
-                if (directFile.getPath().endsWith(variableFileName)) {
-                  log.info("Found file " + directFile.getName());
-                  if (isAdd) {
-                    navigate(project, directFile, lines);
-                  } else {
-                    removeHightlight(project, directFile, lines);
-                  }
-                  return;
-                }
+                return;
               }
             }
           }
@@ -128,5 +137,30 @@ public class FileNavigatorImpl implements FileNavigator {
     for (int line : linesArrayList){
       editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
     }
+  }
+
+  private static boolean isValidProject(String path, String applicationId) {
+    Element element = null;
+    File f = new File(path);
+    log.info("file path: " + path);
+    DocumentBuilder db = null;
+    DocumentBuilderFactory dbf = null;
+    try {
+      dbf = DocumentBuilderFactory.newInstance();
+      db = dbf.newDocumentBuilder();
+      Document dt = db.parse(f);
+      element = dt.getDocumentElement();
+      String packageName = element.getAttributes().getNamedItem("package").getNodeValue();
+      log.info("packageName:" + packageName);
+      if (packageName.equals(applicationId)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (Exception e) {
+      log.error("Error", e);
+    }
+    return false;
   }
 }
