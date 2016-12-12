@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static io.appetizer.intellij.remotecall.filenavigator.ProcessType.TYPE.HIGHLIGHT;
+
 public class FileNavigatorImpl implements FileNavigator {
 
   private static final Logger log = Logger.getInstance(FileNavigatorImpl.class);
@@ -34,9 +36,10 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final String pathConstraint = "src";
   private static final String androidManifestName = "AndroidManifest.xml";
   private static Project myProject = null;
+  private static int count = 0;
 
   @Override
-  public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final boolean isAdd) {
+  public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
     ApplicationManager.getApplication().invokeLater(new Runnable() {
       public void run() {
         Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = new HashMap<Project, Collection<VirtualFile>>();
@@ -66,10 +69,23 @@ public class FileNavigatorImpl implements FileNavigator {
             if (directFile.getPath().contains(pathConstraint)) {
               if (directFile.getPath().endsWith(variableFileName)) {
                 log.info("Found file " + directFile.getName());
-                if (isAdd) {
-                  navigate(myProject, directFile, lines);
-                } else {
-                  removeHightlight(myProject, directFile, lines);
+                switch (type) {
+                  case HIGHLIGHT:
+                    addLinesHighlighter(myProject, lines);
+                    break;
+                  case NAVIGATE:
+                    navigate(myProject, directFile, lines);
+                    break;
+                  case REMOVEHIGHLIGHT:
+                    removeHightlight(myProject, directFile, lines);
+                    break;
+                  case NAVIGATEANDHIGHLIGHT:
+                    navigate(myProject, directFile, lines);
+                    addLinesHighlighter(myProject, lines);
+                    break;
+                  default:
+                    log.info("Can't find");
+                    break;
                 }
                 return;
               }
@@ -101,7 +117,7 @@ public class FileNavigatorImpl implements FileNavigator {
     if (openFileDescriptor.canNavigate()) {
       log.info("Trying to navigate to " + file.getPath());
       openFileDescriptor.navigate(true);
-      addLinesHighlighter(project, lines);
+      //addLinesHighlighter(project, lines);
       Window parentWindow = WindowManager.getInstance().suggestParentWindow(project);
       if (parentWindow != null) {
         parentWindow.toFront();
@@ -118,7 +134,9 @@ public class FileNavigatorImpl implements FileNavigator {
     final TextAttributes attr = new TextAttributes();
     attr.setBackgroundColor(JBColor.LIGHT_GRAY);
     //attr.setForegroundColor(JBColor.LIGHT_GRAY);
+    // TODO: Check if line is illegal
     for (int line : lines){
+      log.info("line:" + line);
       editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
     }
   }

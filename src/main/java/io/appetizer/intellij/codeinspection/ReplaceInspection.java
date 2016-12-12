@@ -11,6 +11,7 @@ import com.intellij.ui.DocumentAdapter;
 import io.appetizer.intellij.VariantPool;
 import io.appetizer.intellij.remotecall.filenavigator.FileNavigator;
 import io.appetizer.intellij.remotecall.filenavigator.FileNavigatorImpl;
+import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +60,7 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
       if (VariantPool.isJump()) {
         ArrayList<Integer> linesArrayList = new ArrayList<Integer>();
         linesArrayList.add(VariantPool.getMyLine());
-        fileNavigator.findAndNavigate(VariantPool.getMyFileName(),linesArrayList, true);
+        fileNavigator.findAndNavigate(VariantPool.getMyFileName(), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
       }
     }
   }

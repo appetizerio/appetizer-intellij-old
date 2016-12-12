@@ -3,6 +3,7 @@ package io.appetizer.intellij.remotecall.handler;
 import io.appetizer.intellij.remotecall.filenavigator.FileNavigator;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
+import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
 import io.appetizer.intellij.remotecall.highlight.FileHighLight;
 import io.appetizer.intellij.remotecall.highlight.HighLight;
 
@@ -41,13 +42,14 @@ public class OpenFileMessageHandler implements MessageHandler {
           FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
           HighLight.addHighToGroup(groupid, fileHighLight);
           log.info("FileHighLight: fileName" + matcher.replaceAll(""));
-          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, true);
+          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
         }
       }else {
         groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
         if (groupid == HighLight.MAXGROUPID) {
           linesArrayList.add(-1);
-          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, false);
+          log.info("-1 REMOVEHIGHLIGHT");
+          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.REMOVEHIGHLIGHT);
         }else {
           log.info("groupId : " + groupid);
           ArrayList<FileHighLight> als;
@@ -57,7 +59,7 @@ public class OpenFileMessageHandler implements MessageHandler {
           }
           for (FileHighLight al : als) {
             log.info(al.getFileName());
-            fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), false);
+            fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
           }
         }
       }
