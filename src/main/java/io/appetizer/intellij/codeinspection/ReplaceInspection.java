@@ -60,7 +60,7 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
       if (VariantPool.isJump()) {
         ArrayList<Integer> linesArrayList = new ArrayList<Integer>();
         linesArrayList.add(VariantPool.getMyLine());
-        fileNavigator.findAndNavigate(VariantPool.getMyFileName(), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
+        fileNavigator.findAndNavigate(VariantPool.getApplicationid(), VariantPool.getMyFileName(), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
       }
     }
   }

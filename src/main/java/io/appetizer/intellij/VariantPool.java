@@ -6,6 +6,7 @@ public class VariantPool {
   private static String myFileName = "";
   private static int myLine = 0;
   private static boolean isJump = false;
+  private static String applicationid = "";
 
   public static void setTaggedWords(String taggedWords) {myTaggedWords = taggedWords; }
   public static void setFileName(String fileName){ myFileName = fileName; }
@@ -17,4 +18,11 @@ public class VariantPool {
   public static boolean isJump() {return isJump; }
   public static String getMyTaggedWords() {return myTaggedWords;}
 
+  public static String getApplicationid() {
+    return applicationid;
+  }
+
+  public static void setApplicationid(String applicationid) {
+    VariantPool.applicationid = applicationid;
+  }
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
 import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
+import io.appetizer.intellij.remotecall.filenavigator.TargetProject;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
 import com.intellij.openapi.diagnostic.Logger;
 import io.appetizer.intellij.remotecall.highlight.HighLight;
@@ -83,39 +84,42 @@ public class SocketMessageNotifier implements MessageNotifier {
 
           log.info("Received request " + requestString);
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
-
+          String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
+          if (applicationid.equals("")) {
+            // TODO : return error to appetizer
+          }
           String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
           String message = "";
           if (Operation.equals( "Clear")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             message = fileName + ":" + HighLight.MAXGROUPID;
             log.info("Clear : " + message);
-            handleMessage(message, ProcessType.TYPE.REMOVEHIGHLIGHT);
+            handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
           }else if (Operation.equals( "HightLight")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
             String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
             message = fileName + ":" + groupId + ":" + lines ;
             log.info("Received message " + message);
-            handleMessage(message, ProcessType.TYPE.HIGHLIGHT);
+            handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
           } else if (Operation.equals( "Navigate")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
             message = fileName + ":" + line ;
             log.info("Received message " + message);
-            handleMessage(message, ProcessType.TYPE.NAVIGATE);
+            handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
           }else if (Operation.equals( "HightLightAndNavigate")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
             String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
             message = fileName + ":" + groupId + ":" + line ;
             log.info("Received message " + message);
-            handleMessage(message, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
+            handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
           }else if (Operation.equals("RemoveHightLight")) {
             String groupId = parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
             message = " " + ":" + groupId;
             log.info("RemoveHightLight : " + message);
-            handleMessage(message, ProcessType.TYPE.REMOVEHIGHLIGHT);
+            handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
           } else if (Operation.equals("Tag")) {
             String taggedWords = parameters.get("taggedWords") != null ? decode(parameters.get("taggedWords").trim(), Charsets.UTF_8.name()) : "";
             String relatedFileName = parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
@@ -123,14 +127,12 @@ public class SocketMessageNotifier implements MessageNotifier {
             VariantPool.setTaggedWords(taggedWords);
             VariantPool.setIsJump(true);
             VariantPool.setFileName(relatedFileName);
+            VariantPool.setApplicationid(applicationid);
             int rl = Integer.parseInt(relatedLine);
             if (rl - 1 > 0) {
               VariantPool.setMyLine(rl - 1);
             }
-            Project[] projects = ProjectManager.getInstance().getOpenProjects();
-            // TODO: 2016/11/19 'project[0]' need modifying to specific project
-            log.info("project Name" + projects[0].getName());
-            DaemonCodeAnalyzer.getInstance(projects[0]).restart();
+            DaemonCodeAnalyzer.getInstance(new TargetProject().getTargetProject(applicationid)).restart();
           }
         }
         catch (IOException e) {
@@ -156,9 +158,9 @@ public class SocketMessageNotifier implements MessageNotifier {
     return parameters;
   }
 
-  private void handleMessage(String message, ProcessType.TYPE type) {
+  private void handleMessage(String applicationid, String message, ProcessType.TYPE type) {
     for (MessageHandler handler : messageHandlers) {
-      handler.handleMessage(message, type);
+      handler.handleMessage(applicationid, message, type);
     }
   }
 }

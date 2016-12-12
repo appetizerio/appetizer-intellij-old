@@ -4,25 +4,27 @@ import requests
 
 def usage():
     print("Usage:")
-    print("python main.py [-p <port>] -g <groupId> -f <fileName> -l <lines>")
-    print("python main.py [-p <port>] --hl -g <groupId> -f <fileName> -l <lines>")
-    print("python main.py [-p <port>] -j -f <fileName> -l <lines>")
-    print("python main.py [-p <port>] --rg <removeGroupId>")
-    print("python main.py [-p <port>] --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
-    print("python main.py --clear -f <fileName>")
+    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
+    print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
+    print("python main.py [-p <port>] --id <applicaionid> --clear -f <fileName>")
 
 def main():
     fileName, relatedFileName = "", ""
     groupId, removeGroupId = "", ""
     lines, relatedline = "", ""
     taggedWords = ""
+    applicationid = ""
     clear = False
     port = 8097
     hlflag = False
     navigateflag = False
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hf:g:l:p:c:j", ["help", "rg=", "tw=",
-                                                                "rf=", "rl=", "clear", "hl"])
+                                                                "rf=", "rl=", "clear", "hl",
+                                                                  "id="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -52,23 +54,25 @@ def main():
             hlflag = True
         elif opt in ("-j"):
             navigateflag = True
+        elif opt in ("--id"):
+            applicationid = arg
     if clear:
-        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s' % (port, "Clear", fileName))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s' % (port, applicationid, "Clear", fileName))
     elif hlflag:
-        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (port, "HightLight",fileName, groupId, lines))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
+                           (port, applicationid, "HightLight",fileName, groupId, lines))
     elif navigateflag:
-        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&lines=%s' %
-                           (port, "Navigate",fileName, lines))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&lines=%s' %
+                           (port, applicationid, "Navigate",fileName, lines))
     elif groupId != "":
-        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (port, "HightLightAndNavigate",fileName, groupId, lines))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
+                           (port, applicationid, "HightLightAndNavigate",fileName, groupId, lines))
     elif removeGroupId != "":
-        r  = requests.get( 'http://localhost:%s?Operation=%s&removeGroupId=%s' %
-                           (port, "RemoveHightLight", removeGroupId))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&removeGroupId=%s' %
+                           (port, applicationid, "RemoveHightLight", removeGroupId))
     elif taggedWords != "":
-        r  = requests.get( 'http://localhost:%s?Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
-                           % (port, "Tag", taggedWords, relatedFileName, relatedline))
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
+                           % (port, applicationid, "Tag", taggedWords, relatedFileName, relatedline))
 
 if __name__ == "__main__":
     main()

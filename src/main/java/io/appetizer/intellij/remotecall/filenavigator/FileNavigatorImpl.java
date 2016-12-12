@@ -17,11 +17,6 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.JBColor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.File;
 import java.util.*;
@@ -35,24 +30,10 @@ public class FileNavigatorImpl implements FileNavigator {
   private static Project myProject = null;
 
   @Override
-  public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
+  public void findAndNavigate(final String applicationid, final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
     ApplicationManager.getApplication().invokeLater(new Runnable() {
       public void run() {
-        Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = new HashMap<Project, Collection<VirtualFile>>();
-        Project[] projects = ProjectManager.getInstance().getOpenProjects();
-        for (Project project : projects) {
-          log.info("project:" + project.getName());
-          foundFilesInAllProjects
-            .put(project, FilenameIndex.getVirtualFilesByName(project, new File(androidManifestName).getName(), GlobalSearchScope.allScope(project)));
-        }
-        for (Project project : foundFilesInAllProjects.keySet()) {
-          for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
-            if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), "org.luoluyao.myapplication")) {
-              log.info("Check project package name:" + directFile.getName());
-              myProject = project;
-            }
-          }
-        }
+        myProject = new TargetProject().getTargetProject(applicationid);
         if (myProject == null) {
           // TODO: return error to appetizer
           return;
@@ -70,14 +51,14 @@ public class FileNavigatorImpl implements FileNavigator {
                     addLinesHighlighter(myProject, lines);
                     break;
                   case NAVIGATE:
-                    navigate(myProject, directFile, lines);
+                    navigate(myProject, directFile);
                     addLinesHighlighter(myProject, lines);
                     break;
                   case REMOVEHIGHLIGHT:
                     removeHightlight(myProject, directFile, lines);
                     break;
                   case NAVIGATEANDHIGHLIGHT:
-                    navigate(myProject, directFile, lines);
+                    navigate(myProject, directFile);
                     addLinesHighlighter(myProject, lines);
                     break;
                   default:
@@ -109,7 +90,7 @@ public class FileNavigatorImpl implements FileNavigator {
     return true;
   }
 
-  private static void navigate(Project project, VirtualFile file, ArrayList<Integer> lines) {
+  private static void navigate(Project project, VirtualFile file) {
     final OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, file);
     if (openFileDescriptor.canNavigate()) {
       log.info("Trying to navigate to " + file.getPath());
@@ -127,7 +108,7 @@ public class FileNavigatorImpl implements FileNavigator {
 
   private static void addLinesHighlighter(Project project, ArrayList<Integer> lines) {
     Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-    editor.getMarkupModel().removeAllHighlighters();
+    //editor.getMarkupModel().removeAllHighlighters();
     final TextAttributes attr = new TextAttributes();
     attr.setBackgroundColor(JBColor.LIGHT_GRAY);
     //attr.setForegroundColor(JBColor.LIGHT_GRAY);
@@ -152,30 +133,5 @@ public class FileNavigatorImpl implements FileNavigator {
     for (int line : linesArrayList){
       editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
     }
-  }
-
-  private static boolean isValidProject(String path, String applicationId) {
-    Element element = null;
-    File f = new File(path);
-    log.info("file path: " + path);
-    DocumentBuilder db = null;
-    DocumentBuilderFactory dbf = null;
-    try {
-      dbf = DocumentBuilderFactory.newInstance();
-      db = dbf.newDocumentBuilder();
-      Document dt = db.parse(f);
-      element = dt.getDocumentElement();
-      String packageName = element.getAttributes().getNamedItem("package").getNodeValue();
-      log.info("packageName:" + packageName);
-      if (packageName.equals(applicationId)) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    } catch (Exception e) {
-      log.error("Error", e);
-    }
-    return false;
   }
 }
