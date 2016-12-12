@@ -24,10 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
-
-import static io.appetizer.intellij.remotecall.filenavigator.ProcessType.TYPE.HIGHLIGHT;
 
 public class FileNavigatorImpl implements FileNavigator {
 
@@ -36,7 +33,6 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final String pathConstraint = "src";
   private static final String androidManifestName = "AndroidManifest.xml";
   private static Project myProject = null;
-  private static int count = 0;
 
   @Override
   public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
@@ -75,6 +71,7 @@ public class FileNavigatorImpl implements FileNavigator {
                     break;
                   case NAVIGATE:
                     navigate(myProject, directFile, lines);
+                    addLinesHighlighter(myProject, lines);
                     break;
                   case REMOVEHIGHLIGHT:
                     removeHightlight(myProject, directFile, lines);

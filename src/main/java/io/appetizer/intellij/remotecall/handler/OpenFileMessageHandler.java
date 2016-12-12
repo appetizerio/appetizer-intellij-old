@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import static java.net.URLDecoder.decode;
 import static java.util.regex.Pattern.compile;
+import static org.codehaus.groovy.syntax.Types.NAVIGATE;
 
 public class OpenFileMessageHandler implements MessageHandler {
   private static final Pattern COLUMN_PATTERN = compile("[:#](\\d+)[:#]?(.*)$");
@@ -23,45 +24,69 @@ public class OpenFileMessageHandler implements MessageHandler {
     this.fileNavigator = fileNavigator;
   }
 
-  public void handleMessage(String message, boolean isAdd) {
+  public void handleMessage(String message, ProcessType.TYPE type) {
     Matcher matcher = COLUMN_PATTERN.matcher(message);
     int groupid ;
     String lines;
     ArrayList<Integer> linesArrayList = new ArrayList<Integer>();
     if (matcher.find()) {
-      if (isAdd) {
-        groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-        if (matcher.groupCount() >= 1) {
-          lines = StringUtil.notNullize(matcher.group(2));
-          String[] strs = lines.split("\\-");
-          for (String s : strs) {
-            linesArrayList.add(Integer.parseInt(s));
-            log.info("Line:" + s);
+      switch (type) {
+        case HIGHLIGHT:
+          groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
+          if (matcher.groupCount() >= 1) {
+            lines = StringUtil.notNullize(matcher.group(2));
+            String[] strs = lines.split("\\-");
+            for (String s : strs) {
+              linesArrayList.add(Integer.parseInt(s));
+              log.info("Line:" + s);
+            }
+            //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
+            FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
+            HighLight.addHighToGroup(groupid, fileHighLight);
+            log.info("FileHighLight: fileName" + matcher.replaceAll(""));
+            fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.HIGHLIGHT);
           }
-          //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
-          FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
-          HighLight.addHighToGroup(groupid, fileHighLight);
-          log.info("FileHighLight: fileName" + matcher.replaceAll(""));
-          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
-        }
-      }else {
-        groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-        if (groupid == HighLight.MAXGROUPID) {
-          linesArrayList.add(-1);
-          log.info("-1 REMOVEHIGHLIGHT");
-          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.REMOVEHIGHLIGHT);
-        }else {
-          log.info("groupId : " + groupid);
-          ArrayList<FileHighLight> als;
-          als = HighLight.getFileLines(groupid);
-          if (als == null) {
-            return;
+          break;
+        case NAVIGATE:
+          int line = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
+          linesArrayList.add(line);
+          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATE);
+          break;
+        case NAVIGATEANDHIGHLIGHT:
+          groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
+          if (matcher.groupCount() >= 1) {
+            lines = StringUtil.notNullize(matcher.group(2));
+            String[] strs = lines.split("\\-");
+            for (String s : strs) {
+              linesArrayList.add(Integer.parseInt(s));
+              log.info("Line:" + s);
+            }
+            //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
+            FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
+            HighLight.addHighToGroup(groupid, fileHighLight);
+            log.info("FileHighLight: fileName" + matcher.replaceAll(""));
+            fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
           }
-          for (FileHighLight al : als) {
-            log.info(al.getFileName());
-            fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
+          break;
+        case REMOVEHIGHLIGHT:
+          groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
+          if (groupid == HighLight.MAXGROUPID) {
+            linesArrayList.add(-1);
+            fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.REMOVEHIGHLIGHT);
           }
-        }
+          else {
+            log.info("groupId : " + groupid);
+            ArrayList<FileHighLight> als;
+            als = HighLight.getFileLines(groupid);
+            if (als == null) {
+              return;
+            }
+            for (FileHighLight al : als) {
+              log.info(al.getFileName());
+              fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
+            }
+          }
+          break;
       }
     }
   }

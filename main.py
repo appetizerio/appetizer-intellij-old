@@ -5,6 +5,8 @@ import requests
 def usage():
     print("Usage:")
     print("python main.py [-p <port>] -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --hl -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] -j -f <fileName> -l <lines>")
     print("python main.py [-p <port>] --rg <removeGroupId>")
     print("python main.py [-p <port>] --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
     print("python main.py --clear -f <fileName>")
@@ -16,9 +18,11 @@ def main():
     taggedWords = ""
     clear = False
     port = 8097
+    hlflag = False
+    navigateflag = False
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hf:g:l:p:c", ["help", "rg=", "tw=",
-                                                                "rf=", "rl=", "clear"])
+        opts, args = getopt.getopt(sys.argv[1:], "hf:g:l:p:c:j", ["help", "rg=", "tw=",
+                                                                "rf=", "rl=", "clear", "hl"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -44,11 +48,21 @@ def main():
             relatedFileName = arg
         elif opt in ("--rl"):
             relatedline = arg
+        elif opt in ("--hl"):
+            hlflag = True
+        elif opt in ("-j"):
+            navigateflag = True
     if clear:
         r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s' % (port, "Clear", fileName))
-    elif groupId != "":
+    elif hlflag:
         r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&groupId=%s&lines=%s' %
                            (port, "HightLight",fileName, groupId, lines))
+    elif navigateflag:
+        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&lines=%s' %
+                           (port, "Navigate",fileName, lines))
+    elif groupId != "":
+        r  = requests.get( 'http://localhost:%s?Operation=%s&fileName=%s&groupId=%s&lines=%s' %
+                           (port, "HightLightAndNavigate",fileName, groupId, lines))
     elif removeGroupId != "":
         r  = requests.get( 'http://localhost:%s?Operation=%s&removeGroupId=%s' %
                            (port, "RemoveHightLight", removeGroupId))
