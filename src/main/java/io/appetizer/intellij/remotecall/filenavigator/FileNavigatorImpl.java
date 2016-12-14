@@ -114,7 +114,9 @@ public class FileNavigatorImpl implements FileNavigator {
     // TODO: Check if line is illegal
     for (int line : lines){
       log.info("line:" + line);
-      editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
+      if (line >= 1) {
+        editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
+      }
     }
   }
 

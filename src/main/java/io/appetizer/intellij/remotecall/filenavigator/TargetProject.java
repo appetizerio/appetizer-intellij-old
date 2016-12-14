@@ -29,6 +29,7 @@ public class TargetProject {
     Project[] projects = ProjectManager.getInstance().getOpenProjects();
     for (Project project : projects) {
       log.info("project:" + project.getName());
+      // TODO: WHAT's wrong?
       foundFilesInAllProjects
         .put(project, FilenameIndex
           .getVirtualFilesByName(project, new File(androidManifestName).getName(), GlobalSearchScope.allScope(project)));

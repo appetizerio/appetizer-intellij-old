@@ -127,7 +127,12 @@ public class SocketMessageNotifier implements MessageNotifier {
             if (rl - 1 > 0) {
               VariantPool.setMyLine(rl - 1);
             }
-            DaemonCodeAnalyzer.getInstance(new TargetProject().getTargetProject(applicationid)).restart();
+            Project p = new TargetProject().getTargetProject(applicationid);
+            if (p == null) {
+              //TODO : Return error to appetizer
+            } else {
+              DaemonCodeAnalyzer.getInstance(p).restart();
+            }
           }
         }
         catch (IOException e) {

@@ -1,75 +1,46 @@
-import sys
-import getopt
+import argparse
 import requests
 
 def usage():
     print("Usage:")
-    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <lines>")
-    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
 
 def main():
-    fileName, relatedFileName = "", ""
-    groupId, removeGroupId = "", ""
-    lines, relatedline = "", ""
-    taggedWords = ""
-    applicationid = ""
-    clear = False
-    port = 8097
-    hlflag = False
-    navigateflag = False
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hf:g:l:p:c:j", ["help", "rg=", "tw=",
-                                                                "rf=", "rl=", "hl", "id="])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        if opt in ("-c", "--clear"):
-            clear = True
-        if opt in ("-p"):
-            port = arg
-        elif opt in ("-f"):
-            fileName = arg
-        elif opt in ("-g"):
-            groupId = arg
-        elif opt in ("-l"):
-            lines = arg
-        elif opt in ("--rg"):
-            removeGroupId = arg
-        elif opt in ("--tw"):
-            taggedWords = arg
-        elif opt in ("--rf"):
-            relatedFileName = arg
-        elif opt in ("--rl"):
-            relatedline = arg
-        elif opt in ("--hl"):
-            hlflag = True
-        elif opt in ("-j"):
-            navigateflag = True
-        elif opt in ("--id"):
-            applicationid = arg
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", dest="port", action="store", default=8097, help="")
+    parser.add_argument("--id", dest="applicationid", action="store")
+    parser.add_argument("-f", dest="fileName", action="store")
+    parser.add_argument("-g", dest="groupId", action="store", default=-1)
+    parser.add_argument("-l", dest="lines", action="append", help="Add line" )
+    parser.add_argument("--hl", dest="hlflag", action="store_true", default=False, help="Just highlight" )
+    parser.add_argument("--rg", dest="removeGroupId", action="store", default=-1)
+    parser.add_argument("-j", dest="navigateflag", action="store_true", default=False, help="Just navigate")
+    parser.add_argument("--tw", dest="taggedWords", action="store", default="")
+    parser.add_argument("--rf", dest="relatedFileName", action="store")
+    parser.add_argument("--rl", dest="relatedline", action="store")
+    parser.add_argument('--version', action='version', version='appetizer plugin 1.0.0')
 
-    if hlflag:
+    args = parser.parse_args()
+    if args.hlflag:
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (port, applicationid, "HightLight",fileName, groupId, lines))
-    elif navigateflag:
+                           (args.port, args.applicationid, "HightLight",args.fileName, args.groupId, "-".join(args.lines)))
+    elif args.navigateflag:
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&lines=%s' %
-                           (port, applicationid, "Navigate",fileName, lines))
-    elif groupId != "":
+                           (args.port, args.applicationid, "Navigate",args.fileName, "-".join(args.lines)))
+    elif args.groupId != -1:
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (port, applicationid, "HightLightAndNavigate",fileName, groupId, lines))
-    elif removeGroupId != "":
+                           (args.port, args.applicationid, "HightLightAndNavigate",args.fileName, args.groupId, "-".join(args.lines)))
+    elif args.removeGroupId != -1:
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&removeGroupId=%s' %
-                           (port, applicationid, "RemoveHightLight", removeGroupId))
-    elif taggedWords != "":
+                           (args.port, args.applicationid, "RemoveHightLight", args.removeGroupId))
+    elif args.taggedWords != "":
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
-                           % (port, applicationid, "Tag", taggedWords, relatedFileName, relatedline))
+                           % (args.port, args.applicationid, "Tag", args.taggedWords, args.relatedFileName, args.relatedline))
 
 if __name__ == "__main__":
     main()
+
