@@ -26,7 +26,6 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final Logger log = Logger.getInstance(FileNavigatorImpl.class);
   private static final Joiner pathJoiner = Joiner.on("/");
   private static final String pathConstraint = "src";
-  private static final String androidManifestName = "AndroidManifest.xml";
   private static Project myProject = null;
 
   @Override
@@ -123,10 +122,6 @@ public class FileNavigatorImpl implements FileNavigator {
     FileEditor fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(file);
     Editor editor= fileEditor instanceof TextEditor ? ((TextEditor)fileEditor).getEditor() : null;
     editor.getMarkupModel().getDocument();
-    if (linesArrayList.contains(-1)) {
-      editor.getMarkupModel().removeAllHighlighters();
-      return;
-    }
     final TextAttributes attr = new TextAttributes();
     attr.setBackgroundColor(JBColor.WHITE);
     attr.setForegroundColor(JBColor.BLACK);

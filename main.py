@@ -6,10 +6,9 @@ def usage():
     print("Usage:")
     print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <lines>")
     print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <fileName> -l <lines>")
-    print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <lines>")
+    print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
-    print("python main.py [-p <port>] --id <applicaionid> --clear -f <fileName>")
 
 def main():
     fileName, relatedFileName = "", ""
@@ -23,8 +22,7 @@ def main():
     navigateflag = False
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hf:g:l:p:c:j", ["help", "rg=", "tw=",
-                                                                "rf=", "rl=", "clear", "hl",
-                                                                  "id="])
+                                                                "rf=", "rl=", "hl", "id="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -56,9 +54,8 @@ def main():
             navigateflag = True
         elif opt in ("--id"):
             applicationid = arg
-    if clear:
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s' % (port, applicationid, "Clear", fileName))
-    elif hlflag:
+
+    if hlflag:
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
                            (port, applicationid, "HightLight",fileName, groupId, lines))
     elif navigateflag:

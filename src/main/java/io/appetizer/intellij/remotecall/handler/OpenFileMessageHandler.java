@@ -70,21 +70,15 @@ public class OpenFileMessageHandler implements MessageHandler {
           break;
         case REMOVEHIGHLIGHT:
           groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-          if (groupid == HighLight.MAXGROUPID) {
-            linesArrayList.add(-1);
-            fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.REMOVEHIGHLIGHT);
+          log.info("groupId : " + groupid);
+          ArrayList<FileHighLight> als;
+          als = HighLight.getFileLines(groupid);
+          if (als == null) {
+            return;
           }
-          else {
-            log.info("groupId : " + groupid);
-            ArrayList<FileHighLight> als;
-            als = HighLight.getFileLines(groupid);
-            if (als == null) {
-              return;
-            }
-            for (FileHighLight al : als) {
-              log.info(al.getFileName());
-              fileNavigator.findAndNavigate(applicationid, al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
-            }
+          for (FileHighLight al : als) {
+            log.info(al.getFileName());
+            fileNavigator.findAndNavigate(applicationid, al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
           }
           break;
       }

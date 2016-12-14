@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class HighLight {
   private static ArrayList<GroupHighLight> highlines = new ArrayList<GroupHighLight>();
-  public static int MAXGROUPID = 10000;
 
   public static void addHighToGroup(int groupid, FileHighLight fileHighLight) {
     for (GroupHighLight ghl : highlines) {
