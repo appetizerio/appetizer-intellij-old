@@ -15,6 +15,9 @@
     <component>
       <implementation-class>io.appetizer.intellij.remotecall.RemoteCallComponent</implementation-class>
     </component>
+    <component>
+      <implementation-class>io.appetizer.intellij.component.Component</implementation-class>
+    </component>
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -27,4 +30,9 @@
     <inspectionToolProvider implementation="io.appetizer.intellij.codeinspection.ReplaceProvider"/>
   </extensions>
 
+  <actions>
+    <action id="io.appetizer.intellij.component.SayHelloAction" class="io.appetizer.intellij.component.SayHelloAction" text="Appetizer">
+      <add-to-group group-id="WindowMenu" anchor="first"/>
+    </action>
+  </actions>
 </idea-plugin>
