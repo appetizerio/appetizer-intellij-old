@@ -29,5 +29,24 @@ public class HighLight {
     }
     return null;
   }
+
+  public static String getFileLinesJson(int groupid) {
+    String json = "{";
+    if (highlines == null) {
+      return null;
+    }
+    for (GroupHighLight ghl : highlines) {
+      if (ghl.getGroupid() == groupid) {
+        for (FileHighLight fhl: ghl.getHighlines()) {
+          json += fhl.getJson() + ",";
+        }
+      }
+    }
+    if (json.contains(",")) {
+      json = json.substring(0, json.length() - 1);
+    }
+    json += "}";
+    return json;
+  }
 }
 

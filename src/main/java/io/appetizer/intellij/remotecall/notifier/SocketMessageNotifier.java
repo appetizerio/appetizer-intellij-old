@@ -13,10 +13,7 @@ import io.appetizer.intellij.remotecall.highlight.HighLight;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.net.io.Util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -68,12 +65,10 @@ public class SocketMessageNotifier implements MessageNotifier {
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         try {
           String inputLine, requestString = "";
-
           while ((inputLine = in.readLine()) != null && !inputLine.equals(CRLF) && !inputLine.equals(NL) && !inputLine.isEmpty()) {
             requestString += inputLine;
           }
-          clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
-          clientSocket.close();
+          requestString = decode(requestString, "UTF-8");
 
           StringTokenizer tokenizer = new StringTokenizer(requestString);
           String method = tokenizer.hasMoreElements() ? tokenizer.nextToken() : "";
@@ -90,6 +85,15 @@ public class SocketMessageNotifier implements MessageNotifier {
           }
           String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
           String message = "";
+          if (Operation.equals("Query")) {
+            String querygroupId = parameters.get("querygroupId") != null ? decode(parameters.get("querygroupId").trim(), Charsets.UTF_8.name()) : "0";
+            int id = Integer.parseInt(querygroupId);
+            String json = HighLight.getFileLinesJson(id);
+            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + json).getBytes(Charsets.UTF_8.name()));
+          } else {
+            clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
+          }
+          clientSocket.close();
           if (Operation.equals( "HightLight")) {
             String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
             String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";

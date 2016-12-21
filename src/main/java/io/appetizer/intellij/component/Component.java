@@ -4,8 +4,6 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.ui.Messages;
 
 public class Component implements ApplicationComponent {
-  String welcomeInfo = "<html> Appetizer is a DevOps tool intended for mobile app development. " +
-                       "<br/>Download Appetizer from <a href=\"http://www.appetizer.io/\"> here </a>.</html>";
 
   public Component() {
   }
@@ -24,6 +22,8 @@ public class Component implements ApplicationComponent {
   }
 
   public void sayHello() {
+    String welcomeInfo = "<html> Appetizer is a DevOps tool intended for mobile app development. " +
+                         "<br/>Download Appetizer from <a href=\"http://www.appetizer.io/\"> here</a> .</html>";
     Messages.showMessageDialog(welcomeInfo, "Apptizer", Messages.getInformationIcon());
   }
 }

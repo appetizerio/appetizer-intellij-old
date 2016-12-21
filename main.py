@@ -8,6 +8,7 @@ def usage():
     print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
+    print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -22,6 +23,7 @@ def main():
     parser.add_argument("--tw", dest="taggedWords", action="store", default="")
     parser.add_argument("--rf", dest="relatedFileName", action="store")
     parser.add_argument("--rl", dest="relatedline", action="store")
+    parser.add_argument("--qg", dest="querygroupId", action="store")
     parser.add_argument('--version', action='version', version='appetizer plugin 1.0.0')
 
     args = parser.parse_args()
@@ -40,6 +42,11 @@ def main():
     elif args.taggedWords != "":
         r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
                            % (args.port, args.applicationid, "Tag", args.taggedWords, args.relatedFileName, args.relatedline))
+    elif args.querygroupId != "":
+        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&querygroupId=%s'
+                           % (args.port, args.applicationid, "Query",args.querygroupId))
+    print(r.url)
+    print(r.content)
 
 if __name__ == "__main__":
     main()
