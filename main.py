@@ -1,5 +1,6 @@
 import argparse
 import requests
+import urllib
 
 def usage():
     print("Usage:")
@@ -25,29 +26,23 @@ def main():
     parser.add_argument("--rl", dest="relatedline", action="store")
     parser.add_argument("--qg", dest="querygroupId", action="store")
     parser.add_argument('--version', action='version', version='appetizer plugin 1.0.0')
-
     args = parser.parse_args()
+    url = 'http://localhost:%s?' % (args.port)
     if args.hlflag:
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (args.port, args.applicationid, "HightLight",args.fileName, args.groupId, "-".join(args.lines)))
+        parameter = {"id" : args.applicationid, "Operation":"HightLight", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
     elif args.navigateflag:
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&lines=%s' %
-                           (args.port, args.applicationid, "Navigate",args.fileName, "-".join(args.lines)))
+        parameter = {"id" : args.applicationid, "Operation":"Navigate", "fileName": args.fileName, "lines": "-".join(args.lines)}
     elif args.groupId != -1:
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&fileName=%s&groupId=%s&lines=%s' %
-                           (args.port, args.applicationid, "HightLightAndNavigate",args.fileName, args.groupId, "-".join(args.lines)))
+        parameter = {"id" : args.applicationid, "Operation":"HightLightAndNavigate", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
     elif args.removeGroupId != -1:
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&removeGroupId=%s' %
-                           (args.port, args.applicationid, "RemoveHightLight", args.removeGroupId))
+        parameter = {"id" : args.applicationid, "Operation":"RemoveHightLight", "removeGroupId": args.removeGroupId}
     elif args.taggedWords != "":
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&taggedWords=%s&relatedFileName=%s&relatedline=%s'
-                           % (args.port, args.applicationid, "Tag", args.taggedWords, args.relatedFileName, args.relatedline))
+        parameter = {"id" : args.applicationid, "Operation":"Tag", "taggedWords": args.taggedWords, "relatedFileName": args.relatedFileName, "relatedline": args.relatedline }
     elif args.querygroupId != "":
-        r  = requests.get( 'http://localhost:%s?id=%s&Operation=%s&querygroupId=%s'
-                           % (args.port, args.applicationid, "Query",args.querygroupId))
+        parameter = {"id" : args.applicationid, "Operation":"Query", "querygroupId": args.querygroupId}
+    r  = requests.get(url + urllib.urlencode(parameter))
     print(r.url)
     print(r.content)
 
 if __name__ == "__main__":
     main()
-

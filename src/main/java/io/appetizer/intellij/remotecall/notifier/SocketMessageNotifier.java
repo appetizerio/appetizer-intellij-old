@@ -68,8 +68,6 @@ public class SocketMessageNotifier implements MessageNotifier {
           while ((inputLine = in.readLine()) != null && !inputLine.equals(CRLF) && !inputLine.equals(NL) && !inputLine.isEmpty()) {
             requestString += inputLine;
           }
-          requestString = decode(requestString, "UTF-8");
-
           StringTokenizer tokenizer = new StringTokenizer(requestString);
           String method = tokenizer.hasMoreElements() ? tokenizer.nextToken() : "";
           if (!method.equals("GET")) {
@@ -149,14 +147,14 @@ public class SocketMessageNotifier implements MessageNotifier {
     }
   }
 
-  private static Map<String, String> getParametersFromUrl(String url) {
+  private static Map<String, String> getParametersFromUrl(String url) throws UnsupportedEncodingException {
     String parametersString = url.substring(url.indexOf('?') + 1);
     Map<String, String> parameters = new HashMap<String, String>();
     StringTokenizer tokenizer = new StringTokenizer(parametersString, "&");
     while (tokenizer.hasMoreElements()) {
       String[] parametersPair = tokenizer.nextToken().split("=", 2);
       if (parametersPair.length > 1) {
-        parameters.put(parametersPair[0], parametersPair[1]);
+        parameters.put(parametersPair[0], decode(parametersPair[1], "utf-8"));
       }
     }
     return parameters;

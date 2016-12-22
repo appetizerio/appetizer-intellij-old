@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.intellij.openapi.diagnostic.Logger;
+import io.appetizer.intellij.ProjectInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,6 +40,12 @@ public class TargetProject {
         if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), applicationid)) {
           log.info("Check project package name:" + directFile.getName());
           myProject = project;
+          log.info("luo" + project.getBasePath());
+          log.info("luo" + project.getProjectFilePath());
+          log.info("luo" + project.getName());
+          ProjectInfo.setProjectpath(project.getBasePath());
+          ProjectInfo.setApplicationId(applicationid);
+          ProjectInfo.setProjectName(project.getName());
         }
       }
     }
