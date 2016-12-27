@@ -10,6 +10,7 @@ def usage():
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
     print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
+    print("python main.py [-p <port>] --id <applicaionid> -i")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -25,6 +26,7 @@ def main():
     parser.add_argument("--rf", dest="relatedFileName", action="store")
     parser.add_argument("--rl", dest="relatedline", action="store")
     parser.add_argument("--qg", dest="querygroupId", action="store")
+    parser.add_argument("-i", dest="projectInfo", action="store_true", default=False, help="Query Project Information")
     parser.add_argument('--version', action='version', version='appetizer plugin 1.0.0')
     args = parser.parse_args()
     url = 'http://localhost:%s?' % (args.port)
@@ -32,6 +34,8 @@ def main():
         parameter = {"id" : args.applicationid, "Operation":"HightLight", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
     elif args.navigateflag:
         parameter = {"id" : args.applicationid, "Operation":"Navigate", "fileName": args.fileName, "lines": "-".join(args.lines)}
+    elif args.projectInfo:
+        parameter = {"id" : args.applicationid, "Operation": "QueryProjectInfo"}
     elif args.groupId != -1:
         parameter = {"id" : args.applicationid, "Operation":"HightLightAndNavigate", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
     elif args.removeGroupId != -1:

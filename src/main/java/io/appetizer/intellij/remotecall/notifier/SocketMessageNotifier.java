@@ -18,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+import static io.appetizer.intellij.ProjectInfo.getProjectInfo;
 import static java.net.URLDecoder.decode;
 
 public class SocketMessageNotifier implements MessageNotifier {
@@ -78,8 +79,16 @@ public class SocketMessageNotifier implements MessageNotifier {
           log.info("Received request " + requestString);
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
           String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
-          if (applicationid.equals("")) {
-            // TODO : return error to appetizer
+          if (applicationid.isEmpty()) {
+            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
+            clientSocket.close();
+            return;
+          }
+          Project myProject = new TargetProject().getTargetProject(applicationid);
+          if (myProject == null) {
+            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "Project does not exist!").getBytes(Charsets.UTF_8.name()));
+            clientSocket.close();
+            return;
           }
           String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
           String message = "";
@@ -88,6 +97,8 @@ public class SocketMessageNotifier implements MessageNotifier {
             int id = Integer.parseInt(querygroupId);
             String json = HighLight.getFileLinesJson(id);
             clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + json).getBytes(Charsets.UTF_8.name()));
+          } else if (Operation.equals("QueryProjectInfo")) {
+            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + getProjectInfo()).getBytes(Charsets.UTF_8.name()));
           } else {
             clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
           }

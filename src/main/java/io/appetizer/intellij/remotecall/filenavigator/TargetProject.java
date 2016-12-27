@@ -39,10 +39,10 @@ public class TargetProject {
       for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
         if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), applicationid)) {
           log.info("Check project package name:" + directFile.getName());
+          if (directFile.getPath().contains("/src/")) {
+            ProjectInfo.setBaseProjectPath(directFile.getPath().substring(0, directFile.getPath().indexOf("/src/")));
+          }
           myProject = project;
-          log.info("luo" + project.getBasePath());
-          log.info("luo" + project.getProjectFilePath());
-          log.info("luo" + project.getName());
           ProjectInfo.setProjectpath(project.getBasePath());
           ProjectInfo.setApplicationId(applicationid);
           ProjectInfo.setProjectName(project.getName());
