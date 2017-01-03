@@ -1,9 +1,12 @@
 package io.appetizer.intellij.remotecall.highlight;
 
+import com.intellij.openapi.diagnostic.Logger;
+
 import java.util.ArrayList;
 
 public class HighLight {
   private static ArrayList<GroupHighLight> highlines = new ArrayList<GroupHighLight>();
+  private static final Logger log = Logger.getInstance(HighLight.class);
 
   public static void addHighToGroup(int groupid, FileHighLight fileHighLight) {
     for (GroupHighLight ghl : highlines) {
@@ -35,8 +38,10 @@ public class HighLight {
     if (highlines == null) {
       return null;
     }
+    log.info("luoluyao:groupid" + groupid);
     for (GroupHighLight ghl : highlines) {
       if (ghl.getGroupid() == groupid) {
+        log.info("luoluyao:ghl.getGroupid()" + ghl.getGroupid());
         for (FileHighLight fhl: ghl.getHighlines()) {
           json += fhl.getJson() + ",";
         }
@@ -47,6 +52,20 @@ public class HighLight {
     }
     json += "}";
     return json;
+  }
+
+  public static void removeByFile(String fileName) {
+    int indexh = 0;
+    for (GroupHighLight ghl : highlines) {
+      int index = 0;
+      for (FileHighLight fhl: ghl.myFileHighLights) {
+        if (fileName.equals(fhl.getFileName())) {
+          highlines.get(indexh).myFileHighLights.remove(index);
+        }
+        index ++;
+      }
+      indexh ++;
+    }
   }
 }
 

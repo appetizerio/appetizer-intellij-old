@@ -44,7 +44,7 @@ def main():
         parameter = {"id" : args.applicationid, "Operation":"Tag", "taggedWords": args.taggedWords, "relatedFileName": args.relatedFileName, "relatedline": args.relatedline }
     elif args.querygroupId != "":
         parameter = {"id" : args.applicationid, "Operation":"Query", "querygroupId": args.querygroupId}
-    r  = requests.get(url + urllib.urlencode(parameter))
+    r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
     print(r.url)
     print(r.content)
 

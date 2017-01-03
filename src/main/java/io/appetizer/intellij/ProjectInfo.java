@@ -1,11 +1,14 @@
 package io.appetizer.intellij;
 
+import com.intellij.openapi.project.Project;
+
 public class ProjectInfo {
   private static String applicationId;
   private static String projectPath;
   private static String projectName;
   private static String apkPath;
   private static String baseProjectPath;
+  private static Project project;
 
   public static String getBaseProjectPath() {
     return baseProjectPath;
@@ -13,6 +16,14 @@ public class ProjectInfo {
 
   public static void setBaseProjectPath(String baseProjectPath) {
     ProjectInfo.baseProjectPath = baseProjectPath;
+  }
+
+  public static Project getProject() {
+    return project;
+  }
+
+  public static void setProject(Project project) {
+    ProjectInfo.project = project;
   }
 
   public String getProjectName() {
@@ -41,7 +52,7 @@ public class ProjectInfo {
     return apkPath;
   }
 
-  public static void setApkpath(String apkpath) {
+  private static void setApkpath(String apkpath) {
     apkPath = apkpath;
   }
 

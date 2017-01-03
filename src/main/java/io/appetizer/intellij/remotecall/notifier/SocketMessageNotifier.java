@@ -84,7 +84,7 @@ public class SocketMessageNotifier implements MessageNotifier {
             clientSocket.close();
             return;
           }
-          Project myProject = new TargetProject().getTargetProject(applicationid);
+          Project myProject = TargetProject.getTargetProject(applicationid);
           if (myProject == null) {
             clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "Project does not exist!").getBytes(Charsets.UTF_8.name()));
             clientSocket.close();
@@ -140,7 +140,7 @@ public class SocketMessageNotifier implements MessageNotifier {
             if (rl - 1 > 0) {
               VariantPool.setMyLine(rl - 1);
             }
-            Project p = new TargetProject().getTargetProject(applicationid);
+            Project p = TargetProject.getTargetProject(applicationid);
             if (p == null) {
               //TODO : Return error to appetizer
             } else {

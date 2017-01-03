@@ -10,10 +10,7 @@ import io.appetizer.intellij.remotecall.highlight.HighLight;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.net.URLDecoder.decode;
 import static java.util.regex.Pattern.compile;
-import static org.codehaus.groovy.syntax.Types.NAVIGATE;
 
 public class OpenFileMessageHandler implements MessageHandler {
   private static final Pattern COLUMN_PATTERN = compile("[:#](\\d+)[:#]?(.*)$");
