@@ -5,10 +5,10 @@ import urllib
 def usage():
     print("Usage:")
     print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <line>")
-    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <fileName> -l <line>")
-    print("python main.py [-p <port>] --id <applicaionid> -j -f <fileName> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <packagePath/fileName> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> -j -f <packagePath/fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
-    print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <relatedFileName> --rl <relatedline>")
+    print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <packagePath/fileName> --rl <relatedline>")
     print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
     print("python main.py [-p <port>] --id <applicaionid> -i")
 

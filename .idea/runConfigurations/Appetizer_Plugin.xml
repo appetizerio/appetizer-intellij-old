@@ -1,8 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Appetizer Plugin" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-    <module name="RemoteCall" />
+    <module name="appetizer-intellij" />
     <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
     <option name="PROGRAM_PARAMETERS" value="" />
+    <alternative-path path="IntelliJ IDEA Community Edition IC-162.2032.8" alternative-path-enabled="true" />
+    <log_file path="$USER_HOME$/.IdeaIC2016.2/system/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="" />
       <option name="TRANSPORT" value="0" />

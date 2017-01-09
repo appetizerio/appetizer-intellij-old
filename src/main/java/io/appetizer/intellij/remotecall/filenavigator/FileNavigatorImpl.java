@@ -37,13 +37,9 @@ public class FileNavigatorImpl implements FileNavigator {
           // TODO: return error to appetizer
           return;
         }
-        Deque<String> pathElements = splitPath(fileName);
-        String variableFileName = pathJoiner.join(pathElements);
-        log.info("variableFileName:" + variableFileName);
-        while (pathElements.size() > 0) {
           for (VirtualFile directFile : FilenameIndex.getVirtualFilesByName(myProject, new File(fileName).getName(), GlobalSearchScope.allScope(myProject))) {
             if (directFile.getPath().contains(pathConstraint)) {
-              if (directFile.getPath().endsWith(variableFileName)) {
+              if (directFile.getPath().endsWith(fileName)) {
                 log.info("Found file " + directFile.getName());
                 switch (type) {
                   case HIGHLIGHT:
@@ -68,9 +64,6 @@ public class FileNavigatorImpl implements FileNavigator {
               }
             }
           }
-          pathElements.pop();
-          variableFileName = pathJoiner.join(pathElements);
-        }
       }
     });
   }
