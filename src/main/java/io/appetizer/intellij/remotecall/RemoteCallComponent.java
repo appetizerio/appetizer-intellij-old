@@ -1,6 +1,8 @@
 package io.appetizer.intellij.remotecall;
 
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.event.EditorEventMulticaster;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
@@ -10,6 +12,7 @@ import io.appetizer.intellij.ProjectAll;
 import io.appetizer.intellij.ProjectInfo;
 import io.appetizer.intellij.remotecall.handler.OpenFileMessageHandler;
 import io.appetizer.intellij.remotecall.highlight.HighLight;
+import io.appetizer.intellij.remotecall.listener.DocumentChangeListener;
 import io.appetizer.intellij.remotecall.notifier.MessageNotifier;
 import io.appetizer.intellij.remotecall.notifier.SocketMessageNotifier;
 import io.appetizer.intellij.remotecall.settings.RemoteCallSettings;
@@ -44,6 +47,9 @@ public class RemoteCallComponent implements ApplicationComponent, BulkFileListen
     final boolean allowRequestsFromLocalhostOnly = mySettings.isAllowRequestsFromLocalhostOnly();
     connection.subscribe(VirtualFileManager.VFS_CHANGES, this);
     ProjectAll.setFoundFilesInAllProjects();
+    EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
+    eventMulticaster.addDocumentListener(new DocumentChangeListener());
+
     //final JTextPane messageComponent = new JTextPane();
     //Messages.configureMessagePaneUi(messageComponent, message);
     //Messages.showMessageDialog("<html>Go to <a href=\"http://www.appetizer.io/\">appetizer</a></html>", "Appetizer",

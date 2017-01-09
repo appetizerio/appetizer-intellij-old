@@ -75,5 +75,9 @@ public class HighLight {
       indexh ++;
     }
   }
+
+  public static void removeAll() {
+    highlines.clear();
+  }
 }
 

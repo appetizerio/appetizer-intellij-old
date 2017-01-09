@@ -4,7 +4,7 @@ import urllib
 
 def usage():
     print("Usage:")
-    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <fileName> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <packagePath/fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <packagePath/fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> -j -f <packagePath/fileName> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
