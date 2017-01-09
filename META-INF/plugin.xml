@@ -34,5 +34,9 @@
     <action id="io.appetizer.intellij.component.SayHelloAction" class="io.appetizer.intellij.component.SayHelloAction" text="Appetizer">
       <add-to-group group-id="WindowMenu" anchor="first"/>
     </action>
+    <action id="io.appetizer.intellij.component.EditorIllustration" class="io.appetizer.intellij.component.EditorIllustration" text="Editor Handler"
+            description="Illustrates how to plug an action in">
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+    </action>
   </actions>
 </idea-plugin>

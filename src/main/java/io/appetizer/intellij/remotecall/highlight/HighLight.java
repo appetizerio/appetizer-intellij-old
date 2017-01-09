@@ -56,13 +56,21 @@ public class HighLight {
 
   public static void removeByFile(String fileName) {
     int indexh = 0;
+    boolean isMatch = false;
     for (GroupHighLight ghl : highlines) {
       int index = 0;
-      for (FileHighLight fhl: ghl.myFileHighLights) {
-        if (fileName.equals(fhl.getFileName())) {
-          highlines.get(indexh).myFileHighLights.remove(index);
+      if (ghl.myFileHighLights != null) {
+        for (FileHighLight fhl: ghl.myFileHighLights) {
+          if (fileName.endsWith(fhl.getFileName())) {
+            isMatch = true;
+            break;
+          }
+          index ++;
         }
-        index ++;
+        if (isMatch) {
+          highlines.get(indexh).myFileHighLights.remove(index);
+          return;
+        }
       }
       indexh ++;
     }
