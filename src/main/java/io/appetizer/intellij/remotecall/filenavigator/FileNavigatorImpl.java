@@ -26,13 +26,13 @@ public class FileNavigatorImpl implements FileNavigator {
   private static final Logger log = Logger.getInstance(FileNavigatorImpl.class);
   private static final Joiner pathJoiner = Joiner.on("/");
   private static final String pathConstraint = "src";
-  private static Project myProject = null;
+  private Project myProject = null;
 
   @Override
   public void findAndNavigate(final String applicationid, final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
     ApplicationManager.getApplication().invokeLater(new Runnable() {
       public void run() {
-        myProject = new TargetProject().getTargetProject(applicationid);
+        myProject = TargetProject.getTargetProject(applicationid);
         if (myProject == null) {
           // TODO: return error to appetizer
           return;
@@ -46,14 +46,14 @@ public class FileNavigatorImpl implements FileNavigator {
                     addLinesHighlighter(myProject, lines);
                     break;
                   case NAVIGATE:
-                    navigate(myProject, directFile);
+                    navigate(myProject, directFile, lines);
                     addLinesHighlighter(myProject, lines);
                     break;
                   case REMOVEHIGHLIGHT:
                     removeHightlight(myProject, directFile, lines);
                     break;
                   case NAVIGATEANDHIGHLIGHT:
-                    navigate(myProject, directFile);
+                    navigate(myProject, directFile, lines);
                     addLinesHighlighter(myProject, lines);
                     break;
                   default:
@@ -82,12 +82,17 @@ public class FileNavigatorImpl implements FileNavigator {
     return true;
   }
 
-  private static void navigate(Project project, VirtualFile file) {
-    final OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, file);
+  private static void navigate(Project project, VirtualFile file, ArrayList<Integer> lines) {
+    final OpenFileDescriptor openFileDescriptor;
+    if (!lines.isEmpty()) {
+      int line = lines.get(0);
+      openFileDescriptor = new OpenFileDescriptor(project, file, line - 1, 0);
+    } else {
+      openFileDescriptor = new OpenFileDescriptor(project, file);
+    }
     if (openFileDescriptor.canNavigate()) {
       log.info("Trying to navigate to " + file.getPath());
       openFileDescriptor.navigate(true);
-      //addLinesHighlighter(project, lines);
       Window parentWindow = WindowManager.getInstance().suggestParentWindow(project);
       if (parentWindow != null) {
         parentWindow.toFront();
