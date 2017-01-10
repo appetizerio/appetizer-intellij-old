@@ -137,15 +137,5 @@ public class RemoteCallComponent implements ApplicationComponent, BulkFileListen
 
   @Override
   public void after(@NotNull List<? extends VFileEvent> list) {
-    String pathConstraint = "src";
-    for (VFileEvent vf : list) {
-      if (vf.getFile().getPath().contains(pathConstraint)) {
-        if (ProjectInfo.getProject() != null) {
-          Editor editor = FileEditorManager.getInstance(ProjectInfo.getProject()).getSelectedTextEditor();
-          editor.getMarkupModel().removeAllHighlighters();
-          HighLight.removeByFile(vf.getFile().getName());
-        }
-      }
-    }
   }
 }
