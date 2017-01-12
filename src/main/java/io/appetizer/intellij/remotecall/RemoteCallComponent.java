@@ -127,7 +127,7 @@ public class RemoteCallComponent implements ApplicationComponent, BulkFileListen
 
   @NotNull
   public String getComponentName() {
-    return "AppetizerRemoteCallComponent";
+    return "AppetizerComponent";
   }
 
   @Override

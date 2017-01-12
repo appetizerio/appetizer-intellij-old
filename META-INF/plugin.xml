@@ -1,12 +1,12 @@
 <idea-plugin version="2">
-  <name>Appetizer Remote call</name>
+  <name>Appetizer.io</name>
   <description>
     IntelliJ IDEA plugin for Appetizer.
 
     Listening port also can be configured in Settings | Other Settings | Appetizer
   </description>
   <version>1.0</version>
-  <vendor email="luoly@emnets.org">luoluyao</vendor>
+  <vendor email="contact@appetizer.io">Appetizer Team</vendor>
   <idea-version since-build="129.1"/>
 
   <depends>com.intellij.modules.platform</depends>
