@@ -22,7 +22,7 @@ public class RemoteCallSettings implements PersistentStateComponent<RemoteCallSe
     return myPortNumber;
   }
 
-  public void setPortNumber(int portNumber){
+  public void setPortNumber(int portNumber) {
     myPortNumber = portNumber;
   }
 

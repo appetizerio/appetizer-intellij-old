@@ -3,7 +3,7 @@
   <description>
     IntelliJ IDEA plugin for Appetizer.
 
-    Listening port also can be configured in Settings | Other Settings | Appetizer
+    Listening port also can be configured in Settings | Other Settings | Appetizer.io
   </description>
   <version>1.0</version>
   <vendor email="contact@appetizer.io">Appetizer Team</vendor>

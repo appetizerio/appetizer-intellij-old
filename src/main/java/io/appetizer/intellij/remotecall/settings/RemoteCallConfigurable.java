@@ -19,6 +19,8 @@ public class RemoteCallConfigurable implements SearchableConfigurable {
   public RemoteCallConfigurable(@NotNull RemoteCallSettings settings) {
     mySettings = settings;
     myListeningPortSpinner.setModel(new SpinnerNumberModel(settings.getPortNumber(), 0, 65535, 1));
+    JSpinner.NumberEditor editor = new JSpinner.NumberEditor(myListeningPortSpinner, "#");
+    myListeningPortSpinner.setEditor(editor);
   }
 
   @NotNull
