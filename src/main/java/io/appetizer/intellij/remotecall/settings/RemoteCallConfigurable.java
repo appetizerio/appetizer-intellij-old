@@ -36,7 +36,7 @@ public class RemoteCallConfigurable implements SearchableConfigurable {
   @Nls
   @Override
   public String getDisplayName() {
-    return "Appetizer";
+    return "Appetizer.io";
   }
 
   @Nullable

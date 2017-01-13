@@ -26,8 +26,9 @@ public class TargetProject {
   private static final String androidManifestName = "AndroidManifest.xml";
 
   public static Project getTargetProject(String applicationid) {
-    for (Project project : ProjectAll.foundFilesInAllProjects.keySet()) {
-      for (VirtualFile directFile : ProjectAll.foundFilesInAllProjects.get(project)) {
+    Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = ProjectAll.setFoundFilesInAllProjects();
+    for (Project project : foundFilesInAllProjects.keySet()) {
+      for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
         if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), applicationid)) {
           log.info("Check project package name:" + directFile.getName());
           if (directFile.getPath().contains("/src/")) {

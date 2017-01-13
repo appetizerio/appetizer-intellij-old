@@ -11,6 +11,7 @@ def usage():
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <packagePath/fileName> --rl <relatedline>")
     print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
     print("python main.py [-p <port>] --id <applicaionid> -i")
+    print("python main.py [-p <port>] -v")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -27,7 +28,7 @@ def main():
     parser.add_argument("--rl", dest="relatedline", action="store")
     parser.add_argument("--qg", dest="querygroupId", action="store")
     parser.add_argument("-i", dest="projectInfo", action="store_true", default=False, help="Query Project Information")
-    parser.add_argument('--version', action='version', version='appetizer plugin 1.0.0')
+    parser.add_argument('-v', dest='version', action= "store_true", default=False)
     args = parser.parse_args()
     url = 'http://localhost:%s?' % (args.port)
     if args.hlflag:
@@ -42,8 +43,11 @@ def main():
         parameter = {"id" : args.applicationid, "Operation":"RemoveHightLight", "removeGroupId": args.removeGroupId}
     elif args.taggedWords != "":
         parameter = {"id" : args.applicationid, "Operation":"Tag", "taggedWords": args.taggedWords, "relatedFileName": args.relatedFileName, "relatedline": args.relatedline }
+    elif args.version:
+        parameter = {"Operation":"Version"}
     elif args.querygroupId != "":
         parameter = {"id" : args.applicationid, "Operation":"Query", "querygroupId": args.querygroupId}
+
     r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
     print(r.url)
     print(r.content)

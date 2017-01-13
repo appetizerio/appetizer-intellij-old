@@ -1,17 +1,8 @@
 package io.appetizer.intellij.remotecall;
 
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.EditorEventMulticaster;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.newvfs.BulkFileListener;
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
-import com.intellij.util.messages.MessageBusConnection;
-import io.appetizer.intellij.ProjectAll;
-import io.appetizer.intellij.ProjectInfo;
 import io.appetizer.intellij.remotecall.handler.OpenFileMessageHandler;
-import io.appetizer.intellij.remotecall.highlight.HighLight;
 import io.appetizer.intellij.remotecall.listener.DocumentChangeListener;
 import io.appetizer.intellij.remotecall.notifier.MessageNotifier;
 import io.appetizer.intellij.remotecall.notifier.SocketMessageNotifier;
@@ -26,27 +17,22 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.util.List;
 
-public class RemoteCallComponent implements ApplicationComponent, BulkFileListener {
+public class RemoteCallComponent implements ApplicationComponent {
   private static final Logger log = Logger.getInstance(RemoteCallComponent.class);
   private final RemoteCallSettings mySettings;
+  public final static String version = "Appetizer.io 1.0";
 
   private ServerSocket serverSocket;
   private Thread listenerThread;
 
-  private final MessageBusConnection connection;
-
   public RemoteCallComponent(RemoteCallSettings settings) {
     mySettings = settings;
-    connection = ApplicationManager.getApplication().getMessageBus().connect();
   }
 
   public void initComponent() {
     final int port = mySettings.getPortNumber();
     final boolean allowRequestsFromLocalhostOnly = mySettings.isAllowRequestsFromLocalhostOnly();
-    connection.subscribe(VirtualFileManager.VFS_CHANGES, this);
-    ProjectAll.setFoundFilesInAllProjects();
     EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
     eventMulticaster.addDocumentListener(new DocumentChangeListener());
 
@@ -113,7 +99,6 @@ public class RemoteCallComponent implements ApplicationComponent, BulkFileListen
   }
 
   public void disposeComponent() {
-    connection.disconnect();
     try {
       if (listenerThread != null) {
         listenerThread.interrupt();
@@ -127,15 +112,7 @@ public class RemoteCallComponent implements ApplicationComponent, BulkFileListen
 
   @NotNull
   public String getComponentName() {
-    return "AppetizerComponent";
+    return "Appetizer.io";
   }
 
-  @Override
-  public void before(@NotNull List<? extends VFileEvent> list) {
-    ProjectAll.setFoundFilesInAllProjects();
-  }
-
-  @Override
-  public void after(@NotNull List<? extends VFileEvent> list) {
-  }
 }

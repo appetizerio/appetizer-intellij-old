@@ -5,6 +5,7 @@ import com.intellij.codeInspection.InspectionProfileEntry;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
+import io.appetizer.intellij.remotecall.RemoteCallComponent;
 import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
 import io.appetizer.intellij.remotecall.filenavigator.TargetProject;
 import io.appetizer.intellij.remotecall.handler.MessageHandler;
@@ -78,73 +79,84 @@ public class SocketMessageNotifier implements MessageNotifier {
 
           log.info("Received request " + requestString);
           Map<String, String> parameters = getParametersFromUrl(tokenizer.nextToken());
-          String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
-          if (applicationid.isEmpty()) {
-            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
-            clientSocket.close();
-            return;
-          }
-          Project myProject = TargetProject.getTargetProject(applicationid);
-          if (myProject == null) {
-            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "Project does not exist!").getBytes(Charsets.UTF_8.name()));
-            clientSocket.close();
-            return;
-          }
           String Operation = parameters.get("Operation") != null ? decode(parameters.get("Operation").trim(), Charsets.UTF_8.name()) : "";
-          String message = "";
-          if (Operation.equals("Query")) {
-            String querygroupId = parameters.get("querygroupId") != null ? decode(parameters.get("querygroupId").trim(), Charsets.UTF_8.name()) : "0";
-            int id = Integer.parseInt(querygroupId);
-            String json = HighLight.getFileLinesJson(id);
-            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + json).getBytes(Charsets.UTF_8.name()));
-          } else if (Operation.equals("QueryProjectInfo")) {
-            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + getProjectInfo()).getBytes(Charsets.UTF_8.name()));
+          if (Operation.equals("Version")) {
+            clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + RemoteCallComponent.version).getBytes(Charsets.UTF_8.name()));
+            clientSocket.close();
           } else {
-            clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
-          }
-          clientSocket.close();
-          if (Operation.equals( "HightLight")) {
-            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-            String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
-            String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
-            message = fileName + ":" + groupId + ":" + lines ;
-            log.info("Received message " + message);
-            handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
-          } else if (Operation.equals( "Navigate")) {
-            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-            String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
-            message = fileName + ":" + line ;
-            log.info("Received message " + message);
-            handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
-          }else if (Operation.equals( "HightLightAndNavigate")) {
-            String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-            String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
-            String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
-            message = fileName + ":" + groupId + ":" + line ;
-            log.info("Received message " + message);
-            handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
-          }else if (Operation.equals("RemoveHightLight")) {
-            String groupId = parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
-            message = " " + ":" + groupId;
-            log.info("RemoveHightLight : " + message);
-            handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
-          } else if (Operation.equals("Tag")) {
-            String taggedWords = parameters.get("taggedWords") != null ? decode(parameters.get("taggedWords").trim(), Charsets.UTF_8.name()) : "";
-            String relatedFileName = parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
-            String relatedLine = parameters.get("relatedline") != null ? decode(parameters.get("relatedline").trim(), Charsets.UTF_8.name()) : "0";
-            VariantPool.setTaggedWords(taggedWords);
-            VariantPool.setIsJump(true);
-            VariantPool.setFileName(relatedFileName);
-            VariantPool.setApplicationid(applicationid);
-            int rl = Integer.parseInt(relatedLine);
-            if (rl - 1 > 0) {
-              VariantPool.setMyLine(rl - 1);
+            String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
+            if (applicationid.isEmpty()) {
+              clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
+              clientSocket.close();
+              return;
             }
-            Project p = TargetProject.getTargetProject(applicationid);
-            if (p == null) {
-              //TODO : Return error to appetizer
-            } else {
-              DaemonCodeAnalyzer.getInstance(p).restart();
+            String message = "";
+            if (Operation.equals("Query")) {
+              String querygroupId =
+                parameters.get("querygroupId") != null ? decode(parameters.get("querygroupId").trim(), Charsets.UTF_8.name()) : "0";
+              int id = Integer.parseInt(querygroupId);
+              String json = HighLight.getFileLinesJson(id);
+              clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + json).getBytes(Charsets.UTF_8.name()));
+            }
+            else if (Operation.equals("QueryProjectInfo")) {
+              clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + getProjectInfo()).getBytes(Charsets.UTF_8.name()));
+            }
+            else {
+              clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
+            }
+            clientSocket.close();
+            if (Operation.equals("HightLight")) {
+              String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+              String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
+              String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
+              message = fileName + ":" + groupId + ":" + lines;
+              log.info("Received message " + message);
+              handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
+            }
+            else if (Operation.equals("Navigate")) {
+              String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+              String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
+              message = fileName + ":" + line;
+              log.info("Received message " + message);
+              handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
+            }
+            else if (Operation.equals("HightLightAndNavigate")) {
+              String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+              String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
+              String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
+              message = fileName + ":" + groupId + ":" + line;
+              log.info("Received message " + message);
+              handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
+            }
+            else if (Operation.equals("RemoveHightLight")) {
+              String groupId =
+                parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
+              message = " " + ":" + groupId;
+              log.info("RemoveHightLight : " + message);
+              handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
+            }
+            else if (Operation.equals("Tag")) {
+              String taggedWords =
+                parameters.get("taggedWords") != null ? decode(parameters.get("taggedWords").trim(), Charsets.UTF_8.name()) : "";
+              String relatedFileName =
+                parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
+              String relatedLine =
+                parameters.get("relatedline") != null ? decode(parameters.get("relatedline").trim(), Charsets.UTF_8.name()) : "0";
+              VariantPool.setTaggedWords(taggedWords);
+              VariantPool.setIsJump(true);
+              VariantPool.setFileName(relatedFileName);
+              VariantPool.setApplicationid(applicationid);
+              int rl = Integer.parseInt(relatedLine);
+              if (rl - 1 > 0) {
+                VariantPool.setMyLine(rl - 1);
+              }
+              Project p = TargetProject.getTargetProject(applicationid);
+              if (p == null) {
+                //TODO : Return error to appetizer
+              }
+              else {
+                DaemonCodeAnalyzer.getInstance(p).restart();
+              }
             }
           }
         }
