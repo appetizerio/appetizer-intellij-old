@@ -50,7 +50,6 @@ def main():
         usage()
     else:
         r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
-        print(r.url)
         print(r.content)
 
 if __name__ == "__main__":

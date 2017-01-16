@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 public class RemoteCallComponent implements ApplicationComponent {
   private static final Logger log = Logger.getInstance(RemoteCallComponent.class);
   private final RemoteCallSettings mySettings;
-  public final static String version = "Appetizer.io 1.0";
+  public final static String version = "Appetizer.io 1.0.0";
 
   private ServerSocket serverSocket;
   private Thread listenerThread;
