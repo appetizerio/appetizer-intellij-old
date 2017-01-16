@@ -10,7 +10,7 @@ def usage():
     print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <package.class> --rl <relatedline>")
     print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
     print("python main.py [-p <port>] --id <applicaionid> -i")
-    print("python main.py [-p <port>] -v")
+    print("python main.py [-p <port>] -v/-version")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -28,6 +28,7 @@ def main():
     parser.add_argument("--qg", dest="querygroupId", action="store")
     parser.add_argument("-i", dest="projectInfo", action="store_true", default=False, help="Query Project Information")
     parser.add_argument('-v', dest='version', action= "store_true", default=False)
+    parser.add_argument('-version', dest='version', action= "store_true", default=False)
     args = parser.parse_args()
     url = 'http://localhost:%s?' % (args.port)
     if args.hlflag:
