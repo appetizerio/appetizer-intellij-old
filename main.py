@@ -31,6 +31,7 @@ def main():
     parser.add_argument('-version', dest='version', action= "store_true", default=False)
     args = parser.parse_args()
     url = 'http://localhost:%s?' % (args.port)
+    parameter = {}
     if args.hlflag:
         parameter = {"id" : args.applicationid, "Operation":"HightLight", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
     elif args.projectInfo:
@@ -43,12 +44,14 @@ def main():
         parameter = {"id" : args.applicationid, "Operation":"Tag", "taggedWords": args.taggedWords, "relatedFileName": args.relatedFileName, "relatedline": args.relatedline }
     elif args.version:
         parameter = {"Operation":"Version"}
-    elif args.querygroupId != "":
+    elif args.querygroupId:
         parameter = {"id" : args.applicationid, "Operation":"Query", "querygroupId": args.querygroupId}
-
-    r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
-    print(r.url)
-    print(r.content)
+    if not parameter:
+        usage()
+    else:
+        r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
+        print(r.url)
+        print(r.content)
 
 if __name__ == "__main__":
     main()
