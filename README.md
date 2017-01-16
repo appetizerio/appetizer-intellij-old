@@ -20,34 +20,32 @@ Coming soon
 
 Python cmd APIs are provided.
 
-* Add a group of highlight (< packagePath/fileName > + < lines >) to < groupId >, at the same time highlight lines of this group of lines, and jump to the first line of < lines >.
+* Add a group of highlight (< package.class > + < lines >) to < groupId >, at the same time highlight lines of this group of lines, and jump to the first line of < lines >.
 ```linux
- python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <packagePath/fileName> -l <line>
+ python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <package.class> -l <line>
 ```
-* Add a group of highlight (< packagePath/fileName > + < lines >) to < groupId >, at the same time highlight lines of this group of lines. (Comparing to previous one, no Jumping )
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/highlight.gif)
+* Add a group of highlight (< package.class > + < lines >) to < groupId >, at the same time highlight lines of this group of lines. (Comparing to previous one, no Jumping )
 
 ```linux
- python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <packagePath/fileName> -l <line>
-```
-* Highlight < line > of < packagePath/fileName >, and jump to < line >.
-```linux
- python main.py [-p <port>] --id <applicaionid> -j -f <packagePath/fileName> -l <line>
+ python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <package.class> -l <line>
 ```
 * Cancel to the highlighting lines of < removeGroupId >
 
 ```linux
  python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>
 ```
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/remove.gif)
 * Find the < taggedWords >, and activate 'small bulb' which provides suggestions to jump to the < relatedline > of < relatedFileName >
 
 ```linux
- python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <packagePath/fileName> --rl <relatedline>
+ python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <package.class> --rl <relatedline>
 ```
 * Query highlighting info of < querygroupId >, return JSON.
 ```linux
  python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>
 ```
-
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/query.gif)
 * Query simple Project info, return JSON.
 ```linux
  python main.py [-p <port>] --id <applicaionid> -i
