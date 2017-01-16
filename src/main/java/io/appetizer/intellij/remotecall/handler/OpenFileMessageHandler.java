@@ -63,6 +63,7 @@ public class OpenFileMessageHandler implements MessageHandler {
         case REMOVEHIGHLIGHT:
           groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
           log.info("groupId : " + groupid);
+          HighLight.removeById(groupid);
           ArrayList<FileHighLight> als;
           als = HighLight.getFileLines(groupid);
           if (als == null) {

@@ -79,5 +79,19 @@ public class HighLight {
   public static void removeAll() {
     highlines.clear();
   }
+
+  public static void removeById(int groupId) {
+    if (highlines == null) {
+      return;
+    }
+    int index = -1;
+    for (GroupHighLight ghl : highlines) {
+      if (ghl.getGroupid() == groupId) {
+        index = highlines.indexOf(ghl);
+        break;
+      }
+    }
+    highlines.remove(index);
+  }
 }
 
