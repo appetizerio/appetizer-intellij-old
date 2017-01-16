@@ -4,11 +4,10 @@ import urllib
 
 def usage():
     print("Usage:")
-    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <packagePath/fileName> -l <line>")
-    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <packagePath/fileName> -l <line>")
-    print("python main.py [-p <port>] --id <applicaionid> -j -f <packagePath/fileName> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <package.class> -l <line>")
+    print("python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <package.class> -l <line>")
     print("python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>")
-    print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <packagePath/fileName> --rl <relatedline>")
+    print("python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <package.class> --rl <relatedline>")
     print("python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>")
     print("python main.py [-p <port>] --id <applicaionid> -i")
     print("python main.py [-p <port>] -v")
@@ -33,8 +32,6 @@ def main():
     url = 'http://localhost:%s?' % (args.port)
     if args.hlflag:
         parameter = {"id" : args.applicationid, "Operation":"HightLight", "fileName": args.fileName, "groupId":args.groupId, "lines": "-".join(args.lines)}
-    elif args.navigateflag:
-        parameter = {"id" : args.applicationid, "Operation":"Navigate", "fileName": args.fileName, "lines": "-".join(args.lines)}
     elif args.projectInfo:
         parameter = {"id" : args.applicationid, "Operation": "QueryProjectInfo"}
     elif args.groupId != -1:

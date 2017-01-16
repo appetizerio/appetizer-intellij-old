@@ -35,18 +35,19 @@ public class FileNavigatorImpl implements FileNavigator {
         myProject = TargetProject.getTargetProject(applicationid);
         if (myProject == null) {
           // TODO: return error to appetizer
+          log.info("myProject:null");
           return;
         }
-          for (VirtualFile directFile : FilenameIndex.getVirtualFilesByName(myProject, new File(fileName).getName(), GlobalSearchScope.allScope(myProject))) {
+        log.info("myProjectName:" + myProject.getName());
+        String changedFileName = fileName.replace(".", "/");
+        changedFileName += ".java";
+        log.info("changedFileName:" + changedFileName);
+          for (VirtualFile directFile : FilenameIndex.getVirtualFilesByName(myProject, new File(changedFileName).getName(), GlobalSearchScope.allScope(myProject))) {
             if (directFile.getPath().contains(pathConstraint)) {
-              if (directFile.getPath().endsWith(fileName)) {
+              if (directFile.getPath().endsWith(changedFileName)) {
                 log.info("Found file " + directFile.getName());
                 switch (type) {
                   case HIGHLIGHT:
-                    addLinesHighlighter(myProject, lines);
-                    break;
-                  case NAVIGATE:
-                    navigate(myProject, directFile, lines);
                     addLinesHighlighter(myProject, lines);
                     break;
                   case REMOVEHIGHLIGHT:

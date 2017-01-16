@@ -44,11 +44,6 @@ public class OpenFileMessageHandler implements MessageHandler {
             fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.HIGHLIGHT);
           }
           break;
-        case NAVIGATE:
-          int line = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
-          linesArrayList.add(line);
-          fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATE);
-          break;
         case NAVIGATEANDHIGHLIGHT:
           groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
           if (matcher.groupCount() >= 1) {
