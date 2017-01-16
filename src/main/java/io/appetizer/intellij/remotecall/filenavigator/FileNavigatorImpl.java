@@ -127,6 +127,7 @@ public class FileNavigatorImpl implements FileNavigator {
     attr.setBackgroundColor(JBColor.WHITE);
     attr.setForegroundColor(JBColor.BLACK);
     for (int line : linesArrayList){
+      log.info("remove line:" + line);
       editor.getMarkupModel().addLineHighlighter(line - 1, HighlighterLayer.LAST, attr);
     }
   }

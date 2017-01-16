@@ -10,6 +10,7 @@ import io.appetizer.intellij.remotecall.highlight.HighLight;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static java.util.regex.Pattern.compile;
 
 public class OpenFileMessageHandler implements MessageHandler {
@@ -40,7 +41,7 @@ public class OpenFileMessageHandler implements MessageHandler {
             //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
             FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
             HighLight.addHighToGroup(groupid, fileHighLight);
-            log.info("FileHighLight: fileName" + matcher.replaceAll(""));
+            log.info("HIGHLIGHT: fileName" + matcher.replaceAll(""));
             fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.HIGHLIGHT);
           }
           break;
@@ -56,14 +57,13 @@ public class OpenFileMessageHandler implements MessageHandler {
             //GroupHighlighter.addGroup(new GroupHighlighter(groupid, linesArrayList));
             FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
             HighLight.addHighToGroup(groupid, fileHighLight);
-            log.info("FileHighLight: fileName" + matcher.replaceAll(""));
+            log.info("NAVIGATEANDHIGHLIGHT: fileName" + matcher.replaceAll(""));
             fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
           }
           break;
         case REMOVEHIGHLIGHT:
           groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
           log.info("groupId : " + groupid);
-          HighLight.removeById(groupid);
           ArrayList<FileHighLight> als;
           als = HighLight.getFileLines(groupid);
           if (als == null) {
@@ -73,6 +73,7 @@ public class OpenFileMessageHandler implements MessageHandler {
             log.info(al.getFileName());
             fileNavigator.findAndNavigate(applicationid, al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
           }
+          HighLight.removeById(groupid);
           break;
       }
     }

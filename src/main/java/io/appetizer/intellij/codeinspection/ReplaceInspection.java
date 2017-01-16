@@ -2,6 +2,7 @@ package io.appetizer.intellij.codeinspection;
 
 import com.intellij.codeInsight.daemon.GroupNames;
 import com.intellij.codeInspection.*;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
@@ -27,6 +28,7 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
   @NonNls private static final String DESCRIPTION_TEMPLATE = InspectionsBundle.message("inspection.duplicates.replace.family.quickfix");
   private final LocalQuickFix myQuickFix = new MyQuickFix();
   private static final FileNavigator fileNavigator = new FileNavigatorImpl();
+  private static final Logger log = Logger.getInstance(ReplaceInspection.class);
 
   @NotNull
   public String getDisplayName() {
@@ -83,6 +85,7 @@ public class ReplaceInspection extends BaseJavaLocalInspectionTool {
         if (VariantPool.isJump()) {
           if (isFindYYY(variable.toString())) {
             holder.registerProblem(variable, DESCRIPTION_TEMPLATE, myQuickFix);
+            log.info("isFindYYY" + variable );
           }
         }
       }

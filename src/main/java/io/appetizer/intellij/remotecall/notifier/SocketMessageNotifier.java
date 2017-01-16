@@ -2,6 +2,7 @@ package io.appetizer.intellij.remotecall.notifier;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.codeInspection.InspectionProfileEntry;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
@@ -84,8 +85,8 @@ public class SocketMessageNotifier implements MessageNotifier {
             clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + RemoteCallComponent.version).getBytes(Charsets.UTF_8.name()));
             clientSocket.close();
           } else {
-            String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
-            if (applicationid.isEmpty()) {
+            final String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
+            if (applicationid.equals("None")) {
               clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
               clientSocket.close();
               return;
@@ -143,13 +144,19 @@ public class SocketMessageNotifier implements MessageNotifier {
               if (rl - 1 > 0) {
                 VariantPool.setMyLine(rl - 1);
               }
-              Project p = TargetProject.getTargetProject(applicationid);
-              if (p == null) {
-                //TODO : Return error to appetizer
-              }
-              else {
-                DaemonCodeAnalyzer.getInstance(p).restart();
-              }
+              ApplicationManager.getApplication().invokeLater(new Runnable() {
+                public void run() {
+                  Project p = TargetProject.getTargetProject(applicationid);
+                  log.info("ApplicationManager");
+                  if (p == null) {
+                    //TODO : Return error to appetizer
+                    log.info("Project is null");
+                  }
+                  else {
+                    DaemonCodeAnalyzer.getInstance(p).restart();
+                  }
+                }
+              });
             }
           }
         }

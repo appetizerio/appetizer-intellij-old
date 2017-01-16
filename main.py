@@ -49,8 +49,11 @@ def main():
     if not parameter:
         usage()
     else:
-        r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
-        print(r.content)
+        if not args.version and not args.applicationid:
+            print("Application ID lost")
+        else:
+            r  = requests.get(url + urllib.urlencode(parameter), timeout=10)
+            print(r.content)
 
 if __name__ == "__main__":
     main()
