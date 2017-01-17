@@ -9,14 +9,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-*.iml, 
+*.iml 
 __pycache__ 
 *.pyc
 
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/dictionaries
-.idea/vcs.xml
+.idea
 
 /out/
 inspectionDescriptions/
