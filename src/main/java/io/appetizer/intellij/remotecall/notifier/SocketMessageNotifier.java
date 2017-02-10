@@ -113,6 +113,12 @@ public class SocketMessageNotifier implements MessageNotifier {
               message = fileName + ":" + groupId + ":" + lines;
               log.info("Received message " + message);
               handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
+            } else if (Operation.equals( "Navigate")) {
+              String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
+              String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "";
+              message = fileName + ":" + line;
+              log.info("Received message " + message);
+              handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
             }
             else if (Operation.equals("HightLightAndNavigate")) {
               String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";

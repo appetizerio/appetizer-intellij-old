@@ -50,6 +50,9 @@ public class FileNavigatorImpl implements FileNavigator {
                   case HIGHLIGHT:
                     addLinesHighlighter(myProject, lines);
                     break;
+                  case NAVIGATE:
+                    navigate(myProject, directFile, lines);
+                    break;
                   case REMOVEHIGHLIGHT:
                     removeHightlight(myProject, directFile, lines);
                     break;
