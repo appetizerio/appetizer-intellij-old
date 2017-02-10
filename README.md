@@ -30,6 +30,10 @@ Python cmd APIs are provided.
 ```linux
  python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <package.class> -l <line>
 ```
+* Jump to < lines >
+```linux
+ python main.py [-p <port>] --id <applicaionid> -j -f <package.class> -l <line>
+```
 * Cancel to the highlighting lines of < removeGroupId >
 
 ```linux
