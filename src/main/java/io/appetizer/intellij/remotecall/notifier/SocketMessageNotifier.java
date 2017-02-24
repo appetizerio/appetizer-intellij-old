@@ -121,11 +121,11 @@ public class SocketMessageNotifier implements MessageNotifier {
               log.info("Received message " + message);
               handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
             }
-            else if (Operation.equals("RemoveHightLight")) {
+            else if (Operation.equals("RemoveHighLight")) {
               String groupId =
                 parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
               message = " " + ":" + groupId;
-              log.info("RemoveHightLight : " + message);
+              log.info("RemoveHighLight : " + message);
               handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
             }
             else if (Operation.equals("Tag")) {

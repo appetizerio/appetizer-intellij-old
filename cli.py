@@ -44,7 +44,7 @@ def main():
     elif cmd == 'highlight':
         req = {"id" : args['app'], "Operation": "HighLight", "fileName": args['clazz'], "groupId": args['group'], "lines": "-".join([str(i) for i in args['lines']]) }
     elif cmd == 'unhighlight':
-        req = {"id" : args['app'], "Operation": "RemoveHightLight", "removeGroupId": args['group']}
+        req = {"id" : args['app'], "Operation": "RemoveHighLight", "removeGroupId": args['group']}
     elif cmd == 'query':
         req = {"id" : args['app'], "Operation": "Query", "querygroupId": args['group']}
     elif cmd == 'info':
