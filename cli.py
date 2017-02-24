@@ -42,7 +42,7 @@ def main():
     elif cmd == 'jump':
         req = {"id" : args['app'], "Operation": "Navigate", "fileName": args['clazz'], "line": str(args['line'])}
     elif cmd == 'highlight':
-        req = {"id" : args['app'], "Operation": "HightLight", "fileName": args['clazz'], "groupId": args['group'], "lines": "-".join([str(i) for i in args['lines']]) }
+        req = {"id" : args['app'], "Operation": "HighLight", "fileName": args['clazz'], "groupId": args['group'], "lines": "-".join([str(i) for i in args['lines']]) }
     elif cmd == 'unhighlight':
         req = {"id" : args['app'], "Operation": "RemoveHightLight", "removeGroupId": args['group']}
     elif cmd == 'query':

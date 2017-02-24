@@ -47,16 +47,13 @@ public class FileNavigatorImpl implements FileNavigator {
               if (directFile.getPath().endsWith(changedFileName)) {
                 log.info("Found file " + directFile.getName());
                 switch (type) {
-                  case HIGHLIGHT:
-                    addLinesHighlighter(myProject, lines);
-                    break;
                   case NAVIGATE:
                     navigate(myProject, directFile, lines);
                     break;
                   case REMOVEHIGHLIGHT:
                     removeHightlight(myProject, directFile, lines);
                     break;
-                  case NAVIGATEANDHIGHLIGHT:
+                  case HIGHLIGHT:
                     navigate(myProject, directFile, lines);
                     addLinesHighlighter(myProject, lines);
                     break;

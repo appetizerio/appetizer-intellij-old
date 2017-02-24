@@ -106,27 +106,20 @@ public class SocketMessageNotifier implements MessageNotifier {
               clientSocket.getOutputStream().write(("HTTP/1.1 204 No Content" + CRLF + CRLF).getBytes(Charsets.UTF_8.name()));
             }
             clientSocket.close();
-            if (Operation.equals("HightLight")) {
-              String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
-              String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
-              String lines = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
-              message = fileName + ":" + groupId + ":" + lines;
-              log.info("Received message " + message);
-              handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
-            } else if (Operation.equals( "Navigate")) {
+          if (Operation.equals( "Navigate")) {
               String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
               String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "";
               message = fileName + ":" + line;
               log.info("Received message " + message);
               handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
             }
-            else if (Operation.equals("HightLightAndNavigate")) {
+            else if (Operation.equals("HighLight")) {
               String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
               String groupId = parameters.get("groupId") != null ? decode(parameters.get("groupId").trim(), Charsets.UTF_8.name()) : "0";
               String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
               message = fileName + ":" + groupId + ":" + line;
               log.info("Received message " + message);
-              handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATEANDHIGHLIGHT);
+              handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
             }
             else if (Operation.equals("RemoveHightLight")) {
               String groupId =
