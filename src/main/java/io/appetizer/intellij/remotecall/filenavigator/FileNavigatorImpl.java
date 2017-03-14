@@ -29,19 +29,19 @@ public class FileNavigatorImpl implements FileNavigator {
   private Project myProject = null;
 
   @Override
-  public void findAndNavigate(final String applicationid, final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
+  public void findAndNavigate(final String fileName, final ArrayList<Integer> lines, final ProcessType.TYPE type) {
     ApplicationManager.getApplication().invokeLater(new Runnable() {
       public void run() {
-        myProject = TargetProject.getTargetProject(applicationid);
+        String changedFileName = fileName.replace(".", "/");
+        changedFileName += ".java";
+        myProject = TargetProject.getTargetProject(changedFileName, false);
+        log.info("changedFileName:" + changedFileName);
         if (myProject == null) {
           // TODO: return error to appetizer
           log.info("myProject:null");
           return;
         }
         log.info("myProjectName:" + myProject.getName());
-        String changedFileName = fileName.replace(".", "/");
-        changedFileName += ".java";
-        log.info("changedFileName:" + changedFileName);
           for (VirtualFile directFile : FilenameIndex.getVirtualFilesByName(myProject, new File(changedFileName).getName(), GlobalSearchScope.allScope(myProject))) {
             if (directFile.getPath().contains(pathConstraint)) {
               if (directFile.getPath().endsWith(changedFileName)) {

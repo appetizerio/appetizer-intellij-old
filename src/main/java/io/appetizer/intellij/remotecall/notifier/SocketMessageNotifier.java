@@ -85,12 +85,6 @@ public class SocketMessageNotifier implements MessageNotifier {
             clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + RemoteCallComponent.version).getBytes(Charsets.UTF_8.name()));
             clientSocket.close();
           } else {
-            final String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
-            if (applicationid.equals("None")) {
-              clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
-              clientSocket.close();
-              return;
-            }
             String message = "";
             if (Operation.equals("Query")) {
               String querygroupId =
@@ -111,7 +105,7 @@ public class SocketMessageNotifier implements MessageNotifier {
               String line = parameters.get("line") != null ? decode(parameters.get("line").trim(), Charsets.UTF_8.name()) : "";
               message = fileName + ":" + line;
               log.info("Received message " + message);
-              handleMessage(applicationid, message, ProcessType.TYPE.NAVIGATE);
+              handleMessage(message, ProcessType.TYPE.NAVIGATE);
             }
             else if (Operation.equals("HighLight")) {
               String fileName = parameters.get("fileName") != null ? decode(parameters.get("fileName").trim(), Charsets.UTF_8.name()) : "";
@@ -119,14 +113,14 @@ public class SocketMessageNotifier implements MessageNotifier {
               String line = parameters.get("lines") != null ? decode(parameters.get("lines").trim(), Charsets.UTF_8.name()) : "";
               message = fileName + ":" + groupId + ":" + line;
               log.info("Received message " + message);
-              handleMessage(applicationid, message, ProcessType.TYPE.HIGHLIGHT);
+              handleMessage(message, ProcessType.TYPE.HIGHLIGHT);
             }
             else if (Operation.equals("RemoveHighLight")) {
               String groupId =
                 parameters.get("removeGroupId") != null ? decode(parameters.get("removeGroupId").trim(), Charsets.UTF_8.name()) : "0";
               message = " " + ":" + groupId;
               log.info("RemoveHighLight : " + message);
-              handleMessage(applicationid, message, ProcessType.TYPE.REMOVEHIGHLIGHT);
+              handleMessage(message, ProcessType.TYPE.REMOVEHIGHLIGHT);
             }
             else if (Operation.equals("Tag")) {
               String taggedWords =
@@ -135,7 +129,13 @@ public class SocketMessageNotifier implements MessageNotifier {
                 parameters.get("relatedFileName") != null ? decode(parameters.get("relatedFileName").trim(), Charsets.UTF_8.name()) : "";
               String relatedLine =
                 parameters.get("relatedline") != null ? decode(parameters.get("relatedline").trim(), Charsets.UTF_8.name()) : "0";
-              VariantPool.setTaggedWords(taggedWords);
+              final String applicationid = parameters.get("id") != null ? decode(parameters.get("id").trim(), Charsets.UTF_8.name()) : "";
+              if (applicationid.equals("None")) {
+                clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + "ApplicationId needed!").getBytes(Charsets.UTF_8.name()));
+                clientSocket.close();
+                return;
+              }
+            VariantPool.setTaggedWords(taggedWords);
               VariantPool.setIsJump(true);
               VariantPool.setFileName(relatedFileName);
               VariantPool.setApplicationid(applicationid);
@@ -145,7 +145,7 @@ public class SocketMessageNotifier implements MessageNotifier {
               }
               ApplicationManager.getApplication().invokeLater(new Runnable() {
                 public void run() {
-                  Project p = TargetProject.getTargetProject(applicationid);
+                  Project p = TargetProject.getTargetProject(applicationid, true);
                   log.info("ApplicationManager");
                   if (p == null) {
                     //TODO : Return error to appetizer
@@ -182,9 +182,9 @@ public class SocketMessageNotifier implements MessageNotifier {
     return parameters;
   }
 
-  private void handleMessage(String applicationid, String message, ProcessType.TYPE type) {
+  private void handleMessage(String message, ProcessType.TYPE type) {
     for (MessageHandler handler : messageHandlers) {
-      handler.handleMessage(applicationid, message, type);
+      handler.handleMessage(message, type);
     }
   }
 }

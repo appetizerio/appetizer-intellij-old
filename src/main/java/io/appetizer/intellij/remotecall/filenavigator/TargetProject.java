@@ -25,23 +25,55 @@ public class TargetProject {
   private static final String pathConstraint = "src";
   private static final String androidManifestName = "AndroidManifest.xml";
 
-  public static Project getTargetProject(String applicationid) {
-    Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = ProjectAll.setFoundFilesInAllProjects();
+  public static Project getTargetProject(String fileName, boolean isId) {
+    Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = ProjectAll.setFoundFilesInAllProjects(fileName, isId);
     for (Project project : foundFilesInAllProjects.keySet()) {
       for (VirtualFile directFile : foundFilesInAllProjects.get(project)) {
-        if (directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), applicationid)) {
-          log.info("Check project package name:" + directFile.getName());
-          if (directFile.getPath().contains("/src/")) {
-            ProjectInfo.setBaseProjectPath(directFile.getPath().substring(0, directFile.getPath().indexOf("/src/")));
+        log.info("Check project package name:" + directFile.getName());
+        if (isId ) {
+          ProjectInfo.setApplicationId(fileName);
+          if (!(directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(androidManifestName) && isValidProject(directFile.getPath(), fileName))) {
+            continue;
           }
-          ProjectInfo.setProject(project);
-          ProjectInfo.setProjectpath(project.getBasePath());
-          ProjectInfo.setApplicationId(applicationid);
-          ProjectInfo.setProjectName(project.getName());
+        } else {
+          if (!(directFile.getPath().contains(pathConstraint) && directFile.getPath().endsWith(fileName))) {
+            continue;
+          }
         }
+        log.info("Check project package name:" + directFile.getName());
+        if (directFile.getPath().contains("/src/")) {
+          ProjectInfo.setBaseProjectPath(directFile.getPath().substring(0, directFile.getPath().indexOf("/src/")));
+        }
+        log.info("project:" + project.getName());
+        ProjectInfo.setProject(project);
+        ProjectInfo.setProjectpath(project.getBasePath());
+        ProjectInfo.setProjectName(project.getName());
+        return project;
       }
     }
+    log.info("what?");
     return ProjectInfo.getProject();
+  }
+
+  private static String getApplicationId(String path) {
+    Element element;
+    File f = new File(path);
+    log.info("file path: " + path);
+    DocumentBuilder db;
+    DocumentBuilderFactory dbf;
+    // todo: Can't find packageName
+    String packageName = "";
+    try {
+      dbf = DocumentBuilderFactory.newInstance();
+      db = dbf.newDocumentBuilder();
+      Document dt = db.parse(f);
+      element = dt.getDocumentElement();
+      packageName = element.getAttributes().getNamedItem("package").getNodeValue();
+      log.info("packageName:" + packageName);
+    } catch (Exception e) {
+      log.error("Error", e);
+    }
+    return packageName;
   }
 
   private static boolean isValidProject(String path, String applicationId) {

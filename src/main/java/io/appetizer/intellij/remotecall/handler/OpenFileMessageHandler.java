@@ -22,7 +22,7 @@ public class OpenFileMessageHandler implements MessageHandler {
     this.fileNavigator = fileNavigator;
   }
 
-  public void handleMessage(String applicationid, String message, ProcessType.TYPE type) {
+  public void handleMessage(String message, ProcessType.TYPE type) {
     Matcher matcher = COLUMN_PATTERN.matcher(message);
     int groupid ;
     String lines;
@@ -32,7 +32,7 @@ public class OpenFileMessageHandler implements MessageHandler {
         case NAVIGATE:
           int line = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
           linesArrayList.add(line);
-          fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATE);
+          fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.NAVIGATE);
           break;
         case HIGHLIGHT:
           groupid = StringUtil.parseInt(StringUtil.notNullize(matcher.group(1)), 1);
@@ -47,7 +47,7 @@ public class OpenFileMessageHandler implements MessageHandler {
             FileHighLight fileHighLight = new FileHighLight(matcher.replaceAll(""), linesArrayList);
             HighLight.addHighToGroup(groupid, fileHighLight);
             log.info("HIGHLIGHT: fileName" + matcher.replaceAll(""));
-            fileNavigator.findAndNavigate(applicationid, matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.HIGHLIGHT);
+            fileNavigator.findAndNavigate(matcher.replaceAll(""), linesArrayList, ProcessType.TYPE.HIGHLIGHT);
           }
           break;
         case REMOVEHIGHLIGHT:
@@ -60,7 +60,7 @@ public class OpenFileMessageHandler implements MessageHandler {
           }
           for (FileHighLight al : als) {
             log.info(al.getFileName());
-            fileNavigator.findAndNavigate(applicationid, al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
+            fileNavigator.findAndNavigate(al.getFileName(), al.getLines(), ProcessType.TYPE.REMOVEHIGHLIGHT);
           }
           HighLight.removeById(groupid);
           break;

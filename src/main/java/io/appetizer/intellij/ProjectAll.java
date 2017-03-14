@@ -14,12 +14,15 @@ import java.util.Map;
 public class ProjectAll {
   private static final String androidManifestName = "AndroidManifest.xml";
 
-  public static Map<Project, Collection<VirtualFile>> setFoundFilesInAllProjects() {
+  public static Map<Project, Collection<VirtualFile>> setFoundFilesInAllProjects(String filename, boolean isId) {
     Map<Project, Collection<VirtualFile>> foundFilesInAllProjects = new HashMap<Project, Collection<VirtualFile>>();
     Project[] projects = ProjectManager.getInstance().getOpenProjects();
     for (Project project : projects) {
-      foundFilesInAllProjects.put(project, FilenameIndex
-        .getVirtualFilesByName(project, new File(androidManifestName).getName(), GlobalSearchScope.allScope(project)));
+      if (isId) {
+        foundFilesInAllProjects.put(project, FilenameIndex.getVirtualFilesByName(project, new File(androidManifestName).getName(), GlobalSearchScope.allScope(project)));
+      } else {
+        foundFilesInAllProjects.put(project, FilenameIndex.getVirtualFilesByName(project, new File(filename).getName(), GlobalSearchScope.allScope(project)));
+      }
     }
     return foundFilesInAllProjects;
   }

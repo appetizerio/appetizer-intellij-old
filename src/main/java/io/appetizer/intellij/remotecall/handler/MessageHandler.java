@@ -4,6 +4,6 @@ import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
 
 public interface MessageHandler {
 
-  void handleMessage(String applicationid, String message, ProcessType.TYPE type);
+  void handleMessage(String message, ProcessType.TYPE type);
 
 }
