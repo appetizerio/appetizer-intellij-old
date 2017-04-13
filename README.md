@@ -20,40 +20,50 @@ Coming soon
 
 Python cmd APIs are provided.
 
-* Add a group of highlight (< package.class > + < lines >) to < groupId >, at the same time highlight lines of this group of lines, and jump to the first line of < lines >.
+* Add a group of highlight (< clazz > + < lines >) to < group >, at the same time highlight lines of this group of lines, and jump to the first line of < lines >.
 ```linux
- python main.py [-p <port>] --id <applicaionid> -g <groupId> -f <package.class> -l <line>
+ python cli.py highlight group clazz lines [lines ...] 
 ```
 ![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/highlight.gif)
-* Add a group of highlight (< package.class > + < lines >) to < groupId >, at the same time highlight lines of this group of lines. (Comparing to previous one, no Jumping )
+
+
+* Jump to (< clazz > + < line >)
+```linux
+ python cli.py jump clazz line
+```
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/jump.gif)
+
+
+* Cancel to the highlighting lines of < group >
+```linux
+ python cli.py unhighlight < group >
+```
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/unhighlight.gif)
+
+
+* Find the < word >, and activate 'small bulb' which provides suggestions to jump to the < lines > of < clazz >
 
 ```linux
- python main.py [-p <port>] --id <applicaionid> --hl -g <groupId> -f <package.class> -l <line>
+ python cli.py tagwords word clazz lines [lines ...]
 ```
-* Jump to < lines >
-```linux
- python main.py [-p <port>] --id <applicaionid> -j -f <package.class> -l <line>
-```
-* Cancel to the highlighting lines of < removeGroupId >
 
+* Query highlighting info of < group >, return JSON.
 ```linux
- python main.py [-p <port>] --id <applicaionid> --rg <removeGroupId>
-```
-![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/remove.gif)
-* Find the < taggedWords >, and activate 'small bulb' which provides suggestions to jump to the < relatedline > of < relatedFileName >
-
-```linux
- python main.py [-p <port>] --id <applicaionid> --tw <taggedWords> --rf <package.class> --rl <relatedline>
-```
-* Query highlighting info of < querygroupId >, return JSON.
-```linux
- python main.py [-p <port>] --id <applicaionid> --qg <querygroupId>
+ python cli.py query < group >
 ```
 ![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/query.gif)
-* Query simple Project info, return JSON.
+
+* Query simple Project info, return JSON. **(Return last operation's project Info)**
 ```linux
- python main.py [-p <port>] --id <applicaionid> -i
+ python cli.py info
 ```
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/info.gif)
+
+* Query plugin version
+```linux
+ python cli.py version
+```
+![image](https://github.com/appetizerio/appetizer-intellij/blob/master/pic/version.gif)
 
 
 
