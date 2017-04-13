@@ -18,10 +18,6 @@ public class VariantPool {
   public static boolean isJump() {return isJump; }
   public static String getMyTaggedWords() {return myTaggedWords;}
 
-  public static String getApplicationid() {
-    return applicationid;
-  }
-
   public static void setApplicationid(String applicationid) {
     VariantPool.applicationid = applicationid;
   }

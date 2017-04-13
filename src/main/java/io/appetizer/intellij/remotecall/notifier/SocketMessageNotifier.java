@@ -1,10 +1,8 @@
 package io.appetizer.intellij.remotecall.notifier;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.codeInspection.InspectionProfileEntry;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import io.appetizer.intellij.VariantPool;
 import io.appetizer.intellij.remotecall.RemoteCallComponent;
 import io.appetizer.intellij.remotecall.filenavigator.ProcessType;
@@ -30,7 +28,6 @@ public class SocketMessageNotifier implements MessageNotifier {
   private final ServerSocket serverSocket;
   private static final String CRLF = "\r\n";
   private static final String NL = "\n";
-  private final InspectionProfileEntry owner = null;
 
   public SocketMessageNotifier(ServerSocket serverSocket) {
     this.serverSocket = serverSocket;
@@ -85,7 +82,7 @@ public class SocketMessageNotifier implements MessageNotifier {
             clientSocket.getOutputStream().write(("HTTP/1.1 200 OK" + CRLF + CRLF + RemoteCallComponent.version).getBytes(Charsets.UTF_8.name()));
             clientSocket.close();
           } else {
-            String message = "";
+            String message ;
             if (Operation.equals("Query")) {
               String querygroupId =
                 parameters.get("querygroupId") != null ? decode(parameters.get("querygroupId").trim(), Charsets.UTF_8.name()) : "0";

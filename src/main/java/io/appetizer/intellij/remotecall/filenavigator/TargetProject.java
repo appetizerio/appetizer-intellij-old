@@ -1,14 +1,10 @@
 package io.appetizer.intellij.remotecall.filenavigator;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -53,27 +49,6 @@ public class TargetProject {
     }
     log.info("what?");
     return ProjectInfo.getProject();
-  }
-
-  private static String getApplicationId(String path) {
-    Element element;
-    File f = new File(path);
-    log.info("file path: " + path);
-    DocumentBuilder db;
-    DocumentBuilderFactory dbf;
-    // todo: Can't find packageName
-    String packageName = "";
-    try {
-      dbf = DocumentBuilderFactory.newInstance();
-      db = dbf.newDocumentBuilder();
-      Document dt = db.parse(f);
-      element = dt.getDocumentElement();
-      packageName = element.getAttributes().getNamedItem("package").getNodeValue();
-      log.info("packageName:" + packageName);
-    } catch (Exception e) {
-      log.error("Error", e);
-    }
-    return packageName;
   }
 
   private static boolean isValidProject(String path, String applicationId) {

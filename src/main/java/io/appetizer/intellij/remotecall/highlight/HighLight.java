@@ -54,28 +54,6 @@ public class HighLight {
     return json;
   }
 
-  public static void removeByFile(String fileName) {
-    int indexh = 0;
-    boolean isMatch = false;
-    for (GroupHighLight ghl : highlines) {
-      int index = 0;
-      if (ghl.myFileHighLights != null) {
-        for (FileHighLight fhl: ghl.myFileHighLights) {
-          if (fileName.endsWith(fhl.getFileName())) {
-            isMatch = true;
-            break;
-          }
-          index ++;
-        }
-        if (isMatch) {
-          highlines.get(indexh).myFileHighLights.remove(index);
-          return;
-        }
-      }
-      indexh ++;
-    }
-  }
-
   public static void removeAll() {
     highlines.clear();
   }

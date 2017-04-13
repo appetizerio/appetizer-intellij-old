@@ -15,20 +15,8 @@ public class FileHighLight {
     return fileName;
   }
 
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
-  }
-
   public ArrayList<Integer> getLines() {
     return lines;
-  }
-
-  public void addLines(int line) {
-    this.lines.add(line);
-  }
-
-  public void setLines(ArrayList<Integer> line) {
-    this.lines = line;
   }
 
   public String getJson(){

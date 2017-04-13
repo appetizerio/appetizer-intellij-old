@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 public class RemoteCallComponent implements ApplicationComponent {
   private static final Logger log = Logger.getInstance(RemoteCallComponent.class);
   private final RemoteCallSettings mySettings;
-  public final static String version = "Appetizer.io 1.0.0";
+  public final static String version = "Appetizer.io 1.1.1";
 
   private ServerSocket serverSocket;
   private Thread listenerThread;
@@ -35,48 +35,6 @@ public class RemoteCallComponent implements ApplicationComponent {
     final boolean allowRequestsFromLocalhostOnly = mySettings.isAllowRequestsFromLocalhostOnly();
     EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
     eventMulticaster.addDocumentListener(new DocumentChangeListener());
-
-    //final JTextPane messageComponent = new JTextPane();
-    //Messages.configureMessagePaneUi(messageComponent, message);
-    //Messages.showMessageDialog("<html>Go to <a href=\"http://www.appetizer.io/\">appetizer</a></html>", "Appetizer",
-    //                          Messages.getInformationIcon());
-    //essages.configureMessagePaneUi()
-    /*
-    DialogWrapper.DoNotAskOption option = new DialogWrapper.DoNotAskOption() {
-      @Override
-      public boolean isToBeShown() {
-        return RemoteCallSettings.getInstance().getAskAgain();
-      }
-
-      @Override
-      public void setToBeShown(boolean value, int exitCode) {
-        RemoteCallSettings.getInstance().setAskAgain(value);
-      }
-
-      @Override
-      public boolean canBeHidden() {
-        return true;
-      }
-
-      @Override
-      public boolean shouldSaveOptionsOnCancel() {
-        return false;
-      }
-
-      @NotNull
-      @Override
-      public String getDoNotShowMessage() {
-        return "Do not ask me again";
-      }
-    };
-
-
-    int result = MessageDialogBuilder.yesNo("Appetizer", "<html> Appetizer is a DevOps tool intended for mobile app development. " +
-                                                         "<br/>Would you like to download Appetizer from <a href=\"http://www.appetizer.io/\"> here </a>?</html>")
-      .yesText("OK, I know it !")
-      .doNotAsk(option)
-      .show();
-*/
     try {
       serverSocket = new ServerSocket();
       serverSocket.bind(new InetSocketAddress(allowRequestsFromLocalhostOnly ? "localhost" : "0.0.0.0", port));

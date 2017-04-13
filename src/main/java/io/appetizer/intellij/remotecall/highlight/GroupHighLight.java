@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class GroupHighLight {
   private int groupid;
-  public ArrayList<FileHighLight> myFileHighLights = new ArrayList<FileHighLight>();
+  private ArrayList<FileHighLight> myFileHighLights = new ArrayList<FileHighLight>();
 
   public int getGroupid() {
     return groupid;

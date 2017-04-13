@@ -8,15 +8,10 @@ import org.jetbrains.annotations.Nullable;
 public class RemoteCallSettings implements PersistentStateComponent<RemoteCallSettings> {
   private int myPortNumber = 8097;
   private boolean myAllowRequestsFromLocalhostOnly = true;
-  private static boolean myAskAgain = true;
 
   public static RemoteCallSettings getInstance() {
-    return (RemoteCallSettings)ServiceManager.getService(RemoteCallSettings.class);
+    return ServiceManager.getService(RemoteCallSettings.class);
   }
-
-  public boolean getAskAgain(){ return  myAskAgain;}
-
-  public void setAskAgain(boolean askAgain) {myAskAgain = askAgain; }
 
   public int getPortNumber() {
     return myPortNumber;
