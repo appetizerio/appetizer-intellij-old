@@ -5,11 +5,12 @@
 
     Listening port also can be configured in Settings | Other Settings | Appetizer.io
   </description>
-  <version>1.0.0</version>
+  <version>1.1.1</version>
   <vendor email="contact@appetizer.io">Appetizer Team</vendor>
   <idea-version since-build="129.1"/>
 
   <depends>com.intellij.modules.platform</depends>
+
 
   <application-components>
     <component>

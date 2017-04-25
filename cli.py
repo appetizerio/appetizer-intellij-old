@@ -16,15 +16,15 @@ def main():
     jump_parser.add_argument('line', action='store', help='the line number', type=int)
 
     highlight_parser = subparsers.add_parser('highlight', help='highlight some lines of a given class file and add these highlights to a highlight group')
-    highlight_parser.add_argument('group', action='store', help='the highlight group ID')
+    highlight_parser.add_argument('group', action='store', help='the highlight group ID', type=int )
     highlight_parser.add_argument('clazz', action='store', help='the fully qualified Java class name, e.g., com.example.MyExample')
     highlight_parser.add_argument('lines', action='store', help='the line number(s)', type=int, nargs='+')
 
     unhighlight_parser = subparsers.add_parser('unhighlight', help='remove a highlight group along with all its highlights')
-    unhighlight_parser.add_argument('group', action='store', help='the highlight group ID')
+    unhighlight_parser.add_argument('group', action='store', help='the highlight group ID', type=int)
 
     query_parser = subparsers.add_parser('query', help='query a highlight group')
-    query_parser.add_argument('group', action='store', help='the highlight group ID')
+    query_parser.add_argument('group', action='store', help='the highlight group ID', type=int)
 
     info_parser = subparsers.add_parser('info', help='get the project info')
 
@@ -34,6 +34,7 @@ def main():
     tagwords_parser.add_argument('lines', action='store', help='the line number(s)', type=int, nargs='+')
 
     args = parser.parse_args().__dict__
+
     cmd = args['cmd']
     req = {}
     if cmd == 'version':
@@ -41,6 +42,7 @@ def main():
     elif cmd == 'jump':
         req = {"Operation": "Navigate", "fileName": args['clazz'], "line": str(args['line'])}
     elif cmd == 'highlight':
+
         req = {"Operation": "HighLight", "fileName": args['clazz'], "groupId": args['group'], "lines": "-".join([str(i) for i in args['lines']]) }
     elif cmd == 'unhighlight':
         req = {"Operation": "RemoveHighLight", "removeGroupId": args['group']}
@@ -53,7 +55,7 @@ def main():
     else:
         print('unknown command')
         return 1
-    
+
     print(req)
     r  = requests.get(args['base'], params=req, timeout=10)
     print(r.content)
